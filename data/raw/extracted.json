@@ -1,0 +1,993 @@
+[
+  {
+    "finCoNo": "0010001",
+    "finPrdtCd": "WR0001F",
+    "conditions": [
+      {
+        "code": "SALARY_TRANSFER",
+        "label": "급여/연금 이체 실적",
+        "rateBp": 70,
+        "evidence": "가.급여/연금 이체:연 0.7%p",
+        "confidence": "high"
+      },
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "공과금 자동이체 출금",
+        "rateBp": 30,
+        "evidence": "나.공과금 자동이체 출금: 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "우리카드 월 10만원 이상 결제",
+        "rateBp": 30,
+        "evidence": "다.우리카드사 신용/체크카드 결제 10만원 이상: 연 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "MARKETING_AGREE",
+        "label": "마케팅 동의(전화·SMS) 유지",
+        "rateBp": 10,
+        "evidence": "2.상품서비스 마케팅 동의 항목 중 전화(휴대폰) 및 SMS항목을 모두 동의 후 만기까지 유지 : 연 0.1%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "금리쿠폰 적용",
+        "rateBp": 0,
+        "evidence": "3.금리쿠폰을 적용",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010001",
+    "finPrdtCd": "WR0001L",
+    "conditions": [
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "우리꿈통장·WON통장 연결 가입",
+        "rateBp": 10,
+        "evidence": "가. 이 적금을 우리꿈통장, WON통장에 연결하여 가입하는 경우 : 0.1%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "오픈뱅킹 타행계좌 등록",
+        "rateBp": 10,
+        "evidence": "나. 우리 오픈뱅킹 서비스에 타행계좌가 등록되어 있는 경우 : 연 0.1%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010016",
+    "finPrdtCd": "10521001001166004",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "전월 평잔 30만원 이상 또는 첫만남통장",
+        "rateBp": 10,
+        "evidence": "-전월 총수신 평잔 30만원 이상 또는 첫만남플러스통장 보유:연0.10%p",
+        "confidence": "low"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "주택청약상품 보유",
+        "rateBp": 20,
+        "evidence": "-당행 주택청약상품 보유",
+        "confidence": "high"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "iM함께예금 동시 가입·만기 보유",
+        "rateBp": 20,
+        "evidence": "-신규일 \"iM함께예금\" 동시 가입 및 만기 보유",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "오픈뱅킹에 타행 계좌 등록",
+        "rateBp": 30,
+        "evidence": "-당행 오픈뱅킹서비스에 다른 은행 계좌 등록:연0.30%p",
+        "confidence": "high"
+      },
+      {
+        "code": "NON_FACE_TO_FACE",
+        "label": "인터넷·모바일뱅킹으로 가입",
+        "rateBp": 5,
+        "evidence": "*해당 상품을 인터넷/모바일뱅킹을 통해 가입:연0.05%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010017",
+    "finPrdtCd": "01020400490002",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "만기별 우대이율(조건 미공시)",
+        "rateBp": 0,
+        "evidence": "*우대이율 6개월제 최대 0.55%, 12개월제 최대 0.90%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010017",
+    "finPrdtCd": "01020400510001",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "개인 우대이율(조건 미명시)",
+        "rateBp": 0,
+        "evidence": "*개인형 우대이율: 최대0.5%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010017",
+    "finPrdtCd": "01020400530001",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "신규 가입 시 우대(조건 불명확)",
+        "rateBp": 5,
+        "evidence": "신규시 우대이율 0.05%",
+        "confidence": "low"
+      },
+      {
+        "code": "OTHER",
+        "label": "해지 시 우대(조건 불명확)",
+        "rateBp": 15,
+        "evidence": "해지시 우대이율 최대 0.15%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010017",
+    "finPrdtCd": "01020400660001",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "우대조건 불명확(가입기간별 우대이율)",
+        "rateBp": 0,
+        "evidence": "*우대이율 6개월 미만 최대2.00%, 6개월 이상 2.20%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010017",
+    "finPrdtCd": "01020400700001",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "공통 우대이율(세부조건 미공시)",
+        "rateBp": 0,
+        "evidence": "- 공통 우대이율 최대 2%",
+        "confidence": "low"
+      },
+      {
+        "code": "OTHER",
+        "label": "가입자격별 우대이율",
+        "rateBp": 0,
+        "evidence": "- 가입자격별 우대이율 최대 0.5%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010019",
+    "finPrdtCd": "TD11330029000",
+    "conditions": [
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "연계 외화적금 동일자 가입",
+        "rateBp": 50,
+        "evidence": "①해피라이프_여행스케치외화적금V 동일자가입 0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "해지원금 500만원 이상",
+        "rateBp": 20,
+        "evidence": "②해지원금 기준 500만원이상 : 최고0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "신용·체크카드 300만원 이상 사용",
+        "rateBp": 30,
+        "evidence": "③신용(체크)카드사용실적300만원이상:최고 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "MARKETING_AGREE",
+        "label": "개인(신용)정보 활용 동의",
+        "rateBp": 20,
+        "evidence": "④개인(신용)정보 동의: 0.2%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010019",
+    "finPrdtCd": "TD11330030000",
+    "conditions": [
+      {
+        "code": "APP_MISSION",
+        "label": "전남 관광지 방문 인증",
+        "rateBp": 150,
+        "evidence": "①예금가입일~만기일전일까지 당행이선정한 전라남도 관광지 방문 인증시 : 최고 1.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "신용·체크카드 300만원 이상 사용",
+        "rateBp": 30,
+        "evidence": "②신용(체크)카드사용실적300만원이상:최고 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "MARKETING_AGREE",
+        "label": "개인(신용)정보 제공 동의",
+        "rateBp": 10,
+        "evidence": "③개인(신용)정보 동의: 0.1%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010019",
+    "finPrdtCd": "TD11330031000",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "VIP고객 선정 이력 보유",
+        "rateBp": 30,
+        "evidence": "①이 예금가입시 VIP고객이거나 가입일 이후부터 만기일전일까지 VIP고객에 선정된 경험이 있는 경우 : 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "정기예금 500만원 이상 가입·유지",
+        "rateBp": 20,
+        "evidence": "②이 예금 가입일에 정기예금 500만원이상(만기 1년이상) 가입하고 만기일 전일까지 유지한 경우 : 0.2%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010020",
+    "finPrdtCd": "220002101",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "출금계좌 평잔 50만원 이상 유지",
+        "rateBp": 80,
+        "evidence": "① 자투리 출금계좌 평잔 50만원 이상 유지 : 0.8%p",
+        "confidence": "high"
+      },
+      {
+        "code": "FIRST_CUSTOMER",
+        "label": "첫거래 또는 1개월 내 재신규",
+        "rateBp": 50,
+        "evidence": "② 첫거래고객 or JBANK저금통적금 1개월 내 재신규 : 0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "목표금액 30만원 이상 달성",
+        "rateBp": 50,
+        "evidence": "③ 신규가입 시점에서 적금 목표금액 최소 30만원 이상 설정하고, 적금 신규일로부터 3개월 내 잔액이 목표금액 이상인 경우 :0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "추천인 등록 우대",
+        "rateBp": 30,
+        "evidence": "④ 추천인 우대금리 : 0.30%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010020",
+    "finPrdtCd": "220002501",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "매월 1회 이상 지속 납입(1년제)",
+        "rateBp": 50,
+        "evidence": "①매월 1회이상 지속적 납입시:1년제: 0.50%",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "목표 금액 달성",
+        "rateBp": 50,
+        "evidence": "② 목표 금액 달성:0.50%",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "카드 월 10만원 이상 사용",
+        "rateBp": 50,
+        "evidence": "③ 신용카드,체크카드 합산 사용액 월10만원 이상 사용: 0.50%",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "청년 응원 이벤트 참여",
+        "rateBp": 50,
+        "evidence": "* 청년이니까응원합니다 이벤트 : 0.50%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010020",
+    "finPrdtCd": "220002701",
+    "conditions": [
+      {
+        "code": "NON_FACE_TO_FACE",
+        "label": "비대면 채널 신규 가입",
+        "rateBp": 10,
+        "evidence": "1. 비대면채널 신규시 0.1%p",
+        "confidence": "high"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "달리자 파킹통장 가입 고객",
+        "rateBp": 30,
+        "evidence": "③달리자 파킹통장 가입 고객이 이 상품 가입시 0.3%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010022",
+    "finPrdtCd": "10-01-30-031-0018-0000",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "당행 계좌 자동이체 입금 시",
+        "rateBp": 10,
+        "evidence": "당행 계좌간 자동이체를 통해 이 예금으로 자동이체 된 금액에 0.1% 금리 우대",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010022",
+    "finPrdtCd": "10-01-30-031-0036",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "당행 계좌 자동이체 6회 이상 입금",
+        "rateBp": 10,
+        "evidence": "당행 계좌간 자동이체를 통해 6회이상 입금한 경우 \n연 0.1% 금리우대",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010026",
+    "finPrdtCd": "01211210113",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "목표금액 달성 시 우대",
+        "rateBp": 100,
+        "evidence": "1. 목표달성 축하금리 : 연 1.0%p\n  - 당행 입출금식 계좌에서 이 적금으로 자동이체를 통해 3회 이상 납입하고 만기일 전일까지 목표금액(신규 시 직접 설정) 이상 납입하는 경우",
+        "confidence": "high"
+      },
+      {
+        "code": "FIRST_CUSTOMER",
+        "label": "최초거래고객 우대",
+        "rateBp": 50,
+        "evidence": "2. 최초거래고객 우대금리 : 연 0.5%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010026",
+    "finPrdtCd": "01211210121",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "에너지 절감 실적 달성",
+        "rateBp": 100,
+        "evidence": "1. 에너지 절감 우대금리 : 최대 연 1.00%p",
+        "confidence": "low"
+      },
+      {
+        "code": "FIRST_CUSTOMER",
+        "label": "은행 최초거래 고객",
+        "rateBp": 50,
+        "evidence": "2. 최초거래고객 우대금리 : 연 0.50%p",
+        "confidence": "high"
+      },
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "지로·공과금 자동이체",
+        "rateBp": 50,
+        "evidence": "3. 지로 또는 공과금 자동이체 우대금리 : 연 0.50%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010026",
+    "finPrdtCd": "01211210122",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "중소기업 재직기간 우대",
+        "rateBp": 120,
+        "evidence": "1. 가입시점 중소기업 근로자로 확인된 경우 : 재직기간에 따라 최고 연 1.2%p",
+        "confidence": "low"
+      },
+      {
+        "code": "SALARY_TRANSFER",
+        "label": "급여이체 6개월 이상",
+        "rateBp": 100,
+        "evidence": "2. 당행 급여이체 실적(월50만원 이상) 6개월 이상\n   인 경우 : 연 1.0%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010026",
+    "finPrdtCd": "01211210129",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "자동이체 실적 충족",
+        "rateBp": 20,
+        "evidence": "1. 자동이체 우대금리 : 연 0.20%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010030",
+    "finPrdtCd": "03101",
+    "conditions": []
+  },
+  {
+    "finCoNo": "0010030",
+    "finPrdtCd": "03700",
+    "conditions": []
+  },
+  {
+    "finCoNo": "0010927",
+    "finPrdtCd": "010200100051",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "단체가입/나라사랑/쿠폰 보유(중복 불가)",
+        "rateBp": 90,
+        "evidence": "① 단체가입/나라사랑/쿠폰 우대이율: \n    1년: 연 0.6%p, 2년: 연 0.7%p,\n    3년: 연 0.9%p, 5년: 연 1.0%p \n   (중복적용되지 않음, 계약기간별차등적용)",
+        "confidence": "low"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "교차거래 실적 보유",
+        "rateBp": 30,
+        "evidence": "② 교차거래 우대이율: 연 0.3%p",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010927",
+    "finPrdtCd": "010200100070",
+    "conditions": [
+      {
+        "code": "SALARY_TRANSFER",
+        "label": "급여이체 실적 보유",
+        "rateBp": 10,
+        "evidence": "급여이체",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "KB카드 결제계좌 지정",
+        "rateBp": 10,
+        "evidence": "카드결제계좌",
+        "confidence": "high"
+      },
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "자동이체 저축 이용",
+        "rateBp": 10,
+        "evidence": "자동이체 저축",
+        "confidence": "high"
+      },
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "아파트관리비 이체",
+        "rateBp": 10,
+        "evidence": "아파트관리비 이체",
+        "confidence": "high"
+      },
+      {
+        "code": "NON_FACE_TO_FACE",
+        "label": "KB스타뱅킹 이체 이용",
+        "rateBp": 10,
+        "evidence": "KB스타뱅킹 이체",
+        "confidence": "low"
+      },
+      {
+        "code": "OTHER",
+        "label": "은행 장기거래 고객",
+        "rateBp": 10,
+        "evidence": "장기거래",
+        "confidence": "low"
+      },
+      {
+        "code": "FIRST_CUSTOMER",
+        "label": "은행 첫 거래 고객",
+        "rateBp": 10,
+        "evidence": "첫 거래",
+        "confidence": "high"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "주택청약종합저축 보유",
+        "rateBp": 10,
+        "evidence": "주택청약종합저축",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "소중한 날 지정 조건",
+        "rateBp": 10,
+        "evidence": "소중한 날",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010927",
+    "finPrdtCd": "010200100084",
+    "conditions": [
+      {
+        "code": "APP_MISSION",
+        "label": "종이통장 줄이기 미션",
+        "rateBp": 10,
+        "evidence": "① 종이통장 줄이기 미션: 연 0.1%p",
+        "confidence": "high"
+      },
+      {
+        "code": "APP_MISSION",
+        "label": "종이서식 줄이기 미션",
+        "rateBp": 20,
+        "evidence": "② 종이서식 줄이기 미션: 연 0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "대중교통 이용 미션 달성(3년제 기준)",
+        "rateBp": 60,
+        "evidence": "③ 대중교통 미션: 1년제 연 0.4%p, 2년제 연 0.5%p, 3년제 연 0.6%p",
+        "confidence": "low"
+      },
+      {
+        "code": "APP_MISSION",
+        "label": "퀴즈미션 참여",
+        "rateBp": 10,
+        "evidence": "④ 퀴즈미션: 연 0.1%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0010927",
+    "finPrdtCd": "010200100104",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "목표금액 달성 시 우대",
+        "rateBp": 100,
+        "evidence": "① 목표달성 축하 우대이율: 최고 연 1.0%p\n    50만원 이하: 연 0.5%p, 50만원 초과: 연 1.0%p",
+        "confidence": "low"
+      },
+      {
+        "code": "APP_MISSION",
+        "label": "별 모으기 미션 달성",
+        "rateBp": 100,
+        "evidence": "② 별 모으기 우대이율 : 최고 연 1.0%p\n    10개: 연 0.5%p, 20개: 연 1.0%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "함께해요(조건 불명확)",
+        "rateBp": 200,
+        "evidence": "③ 함께해요 우대이율: 최고 연 2.0%p",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0011625",
+    "finPrdtCd": "230-0119-85",
+    "conditions": [
+      {
+        "code": "SALARY_TRANSFER",
+        "label": "소득(급여) 이체 실적",
+        "rateBp": 60,
+        "evidence": "- 소득이체 : 연 0.6%",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "신한카드 이용 실적",
+        "rateBp": 30,
+        "evidence": "- 카드이용 : 연 0.3%",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "오픈뱅킹 이용 실적",
+        "rateBp": 60,
+        "evidence": "- 오픈뱅킹 : 연 0.6%",
+        "confidence": "low"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "주택청약 상품 보유",
+        "rateBp": 30,
+        "evidence": "- 청약보유 : 연 0.3%",
+        "confidence": "high"
+      },
+      {
+        "code": "MARKETING_AGREE",
+        "label": "마케팅 수신 동의",
+        "rateBp": 10,
+        "evidence": "- 마케팅동의 : 연 0.1%",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013175",
+    "finPrdtCd": "10-047-1360-0002",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "자동이체 입금 횟수 충족",
+        "rateBp": 50,
+        "evidence": "1. 자동이체 입금횟수 우대금리 : 최고 0.5%p\n - 5회이상 : 0.2%p, 10회이상 : 0.3%p, 15회이상 0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "목표금액 달성 축하",
+        "rateBp": 50,
+        "evidence": "2. 목표금액 달성 축하금리  : 0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "MZ세대(만 19~34세) 우대",
+        "rateBp": 50,
+        "evidence": "3. MZ세대(만 19~34세)) 우대금리 : 0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "FIRST_CUSTOMER",
+        "label": "직전 1년 예적금 미보유 고객",
+        "rateBp": 20,
+        "evidence": "4. 직전 1년간 당행 예적금(청약포함) 미보유 고객 : 0.2%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013175",
+    "finPrdtCd": "10-047-1365-0001",
+    "conditions": [
+      {
+        "code": "SALARY_TRANSFER",
+        "label": "급여이체 실적 보유",
+        "rateBp": 100,
+        "evidence": "① 급여이체 실적 : 1.0%p",
+        "confidence": "high"
+      },
+      {
+        "code": "NON_FACE_TO_FACE",
+        "label": "비대면 채널 이체 실적",
+        "rateBp": 30,
+        "evidence": "2. 비대면 채널 이체 실적 : 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "MARKETING_AGREE",
+        "label": "마케팅 수신 동의",
+        "rateBp": 20,
+        "evidence": "3. 마케팅 동의 : 0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "농업계고·청년농부사관학교 졸업",
+        "rateBp": 200,
+        "evidence": "4. 농업계고 및 청년농부사관학교 졸업자 : 2.0%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013175",
+    "finPrdtCd": "10-047-1381-0001",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "온실가스 줄이기 실천서약 동의",
+        "rateBp": 10,
+        "evidence": "1. 온실가스 줄이기 실천서약서 동의 : 0.1%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "통장 미발급",
+        "rateBp": 30,
+        "evidence": "2. 통장미발급 : 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "손하나로인증 서비스 등록",
+        "rateBp": 20,
+        "evidence": "3. 손하나로인증 서비스 등록 : 0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "대중교통 이용",
+        "rateBp": 20,
+        "evidence": "4. 대중교통이용 : 0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "초록세상예금 동시 보유",
+        "rateBp": 20,
+        "evidence": "5. NH내가Green초록세상예금 동시 보유 : 0.2%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013175",
+    "finPrdtCd": "10-047-1387-0001",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "고향사랑기부금 5만원 이상 납부",
+        "rateBp": 50,
+        "evidence": "1. 고향사랑기부금을 건당 5만원이상 납부한 가입자 우대 : 0.5%p",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "만 19~34세 MZ고객",
+        "rateBp": 30,
+        "evidence": "2-2. 만 19~34세 MZ고객 우대 : 0.3%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013175",
+    "finPrdtCd": "10-059-1264-0001",
+    "conditions": [
+      {
+        "code": "SALARY_TRANSFER",
+        "label": "3개월 이상 급여이체",
+        "rateBp": 30,
+        "evidence": "가입기간 중 3개월 이상 급여이체시 : 0.3%p",
+        "confidence": "high"
+      },
+      {
+        "code": "LINKED_PRODUCT",
+        "label": "주택청약종합저축·펀드 가입",
+        "rateBp": 20,
+        "evidence": "주택청약종합저축 또는 펀드가입 : 0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "CARD_USAGE",
+        "label": "NH채움카드 100만원 이상 결제",
+        "rateBp": 20,
+        "evidence": "NH채움카드 결제실적 1백만원 이상 : 0.2%p",
+        "confidence": "high"
+      },
+      {
+        "code": "NON_FACE_TO_FACE",
+        "label": "인터넷·올원뱅크 비대면 가입",
+        "rateBp": 10,
+        "evidence": "인터넷(스마트)뱅킹 또는 올원뱅크로 가입 : 0.1%p",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013909",
+    "finPrdtCd": "52",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "주거래 이체실적 2종 이상",
+        "rateBp": 90,
+        "evidence": "주거래플러스우대(연 0.9%) : 주거래 하나우대와 동일요건의 거래실적 2종이상 경우",
+        "confidence": "low"
+      },
+      {
+        "code": "NON_FACE_TO_FACE",
+        "label": "온라인 가입·재예치 우대",
+        "rateBp": 10,
+        "evidence": "온라인.재예치우대 연 최대 0.1%",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0013909",
+    "finPrdtCd": "53",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "월부금 자동이체 실적 충족",
+        "rateBp": 50,
+        "evidence": "하나은행 통장에서 계약기간의 1/2이상 월부금 자동이체실적 충족 시 연 0.50%",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0014674",
+    "finPrdtCd": "01012000200000000003",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "금리우대 코드 입력 시 우대",
+        "rateBp": 0,
+        "evidence": "금리우대 코드를 입력하는 경우 우대금리 적용",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0014674",
+    "finPrdtCd": "01012000200000000004",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "입금마다 랜덤 우대금리 누적",
+        "rateBp": 0,
+        "evidence": "입금할 때마다 우대금리를 랜덤으로 제공하며, 입금 시 제공되는 우대금리를 누적으로 합산하여 만기 해지 시 적용 (최고 연 6.0%)",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0014674",
+    "finPrdtCd": "01012000200000000005",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "금리우대 코드 입력 시 우대",
+        "rateBp": 0,
+        "evidence": "금리우대 코드를 입력하는 경우 우대금리 적용",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0014674",
+    "finPrdtCd": "01012000200000000006",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "입금실적에 따른 우대",
+        "rateBp": 0,
+        "evidence": "1. 입금실적에 따라 우대금리 적용",
+        "confidence": "low"
+      },
+      {
+        "code": "OTHER",
+        "label": "금리쿠폰 입력 시 우대",
+        "rateBp": 0,
+        "evidence": "2. 금리쿠폰을 입력시 우대금리 적용",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0014674",
+    "finPrdtCd": "01012000210000000000",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "급여이체/통신비 자동이체/체크카드 중 택1(세부 배분 불명)",
+        "rateBp": 0,
+        "evidence": "급여이체 또는 통신비 자동이체, 체크카드 고객에게 우대금리 제공 (최고 연 0.6%)",
+        "confidence": "low"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0015130",
+    "finPrdtCd": "10-01-30-355-0002",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "자동이체 납입 후 만기해지",
+        "rateBp": 20,
+        "evidence": "자동이체시 우대금리 제공 : 연 0.20%p\n - 제공조건 : 전체 계약월수의 1/2이상을 자동이체로 납입하고 만기 해지하는 경우",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0015130",
+    "finPrdtCd": "10-01-30-355-0005",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "7주 연속 자동이체 성공",
+        "rateBp": 100,
+        "evidence": "① 7주차까지 자동이체 납입을 연속 성공하고 만기해지 하는 경우 연 1.00%p 제공",
+        "confidence": "high"
+      },
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "26주 연속 자동이체 성공",
+        "rateBp": 200,
+        "evidence": "② 26주차까지 자동이체 납입을 연속 성공하고 만기해지 하는 경우 연 2.00%p 추가 제공",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0015130",
+    "finPrdtCd": "10-01-30-355-0006",
+    "conditions": [
+      {
+        "code": "OTHER",
+        "label": "매일 입금 시 회차별 우대",
+        "rateBp": 310,
+        "evidence": "① 매일 우대금리 : 매 입금 시 마다 연 0.10%p 제공(최대 연 3.10%p)",
+        "confidence": "high"
+      },
+      {
+        "code": "OTHER",
+        "label": "누적 입금 횟수 보너스 우대",
+        "rateBp": 240,
+        "evidence": "② 보너스 우대금리 : 누적하여 5/10/15/20/25/31회 입금 시 해당 우대금리 제공(최대 연 2.40%p)",
+        "confidence": "high"
+      }
+    ]
+  },
+  {
+    "finCoNo": "0015130",
+    "finPrdtCd": "10-01-30-355-0007",
+    "conditions": [
+      {
+        "code": "AUTO_TRANSFER",
+        "label": "계약월수 1/2 이상 자동이체 납입",
+        "rateBp": 400,
+        "evidence": "자동이체시 우대금리 제공 : 연 4.00%p\n - 제공조건 : 전체 계약월수의 1/2이상을 자동이체로 납입하고 만기 해지하는 경우",
+        "confidence": "high"
+      }
+    ]
+  }
+]
