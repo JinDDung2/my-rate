@@ -1,0 +1,18 @@
+# <type>(<scope>): <subject>
+#
+# Body:
+# - Why:
+# - What:
+# - Risk:
+#
+# Footer:
+# Closes #
+#
+# Types:
+# feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+#
+# Rules:
+# - Use Conventional Commits: type(scope): subject
+# - Keep one logical change per commit
+# - Do not end the subject with a period
+# - Add BREAKING CHANGE: in footer for incompatible changes
