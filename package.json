@@ -4,9 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "fetch:products": "tsx scripts/fetch-products.ts"
+    "fetch:products": "tsx scripts/fetch-products.ts",
+    "extract:conditions": "tsx scripts/extract-conditions.ts",
+    "build:products": "tsx scripts/build-products.ts",
+    "mark:reviewed": "tsx scripts/mark-reviewed.ts",
+    "check:reviewed": "tsx scripts/check-reviewed.ts",
+    "build": "npm run check:reviewed"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.123.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
