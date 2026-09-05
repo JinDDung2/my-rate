@@ -41,7 +41,13 @@ export function Calculator() {
       count: rows.length,
       topRows: rows.slice(0, 3),
     };
-  }, [input.reserveType, input.selectedConditions, input.termMonths, products]);
+  }, [
+    input.reserveType,
+    input.selectedConditions,
+    input.termMonths,
+    products.data,
+    products.status,
+  ]);
 
   return (
     <div className="grid gap-8">

@@ -130,6 +130,22 @@ describe('my-rate calculation', () => {
     assert.equal(result.clampedAwayBp, 85);
   });
 
+  it('keeps myRate at baseRate when malformed data has maxRate below baseRate', () => {
+    const product = productFixture({
+      conditions: [condition('SALARY_TRANSFER', 0)],
+    });
+    const result = calculateMyRate(
+      product,
+      optionFixture({ baseRate: 3.0, maxRate: 2.9 }),
+      ['SALARY_TRANSFER'],
+    );
+
+    assert.equal(result.myRate, 3.0);
+    assert.equal(result.myRateBp, 300);
+    assert.equal(result.clamped, true);
+    assert.equal(result.clampedAwayBp, 0);
+  });
+
   it('excludes OTHER and unsupported checked conditions from the sum', () => {
     const product = products.find((item) => item.finPrdtCd === '010200100070');
 
@@ -163,7 +179,7 @@ describe('my-rate calculation', () => {
 
     assert.equal(result.applied.length, 2);
     assert.equal(result.appliedBp, 20);
-    assert.equal(result.myRate, option.baseRate + 0.2);
+    assert.equal(result.myRate, (toBp(option.baseRate) + 20) / 100);
   });
 
   it('puts zero-rate conditions in excluded even when checked', () => {
@@ -251,8 +267,8 @@ describe('my-rate calculation', () => {
         );
 
         assert.equal(result.myRateBp, toBp(baseRate) + rateBp);
-        assert.equal(Number((result.myRate * 100).toFixed(8)), result.myRateBp);
-        assert.equal(result.myRate, result.myRateBp / 100);
+        assert.equal(result.myRate.toFixed(2), formatRateFromBp(result.myRateBp, true));
+        assert.equal(String(result.myRate), formatRateFromBp(result.myRateBp));
       }
     }
 
@@ -269,6 +285,15 @@ describe('my-rate calculation', () => {
     const productWithoutSixMonthFixed = products.find((product) => !findRateOption(product, 6, 'S'));
     assert.ok(productWithoutSixMonthFixed);
     assert.equal(findRateOption(productWithoutSixMonthFixed, 6, 'S'), null);
+  });
+
+  it('matches reserve type when the same term has fixed and flexible options', () => {
+    const fixedOption = optionFixture({ saveTrm: 12, rsrvType: 'S', baseRate: 2.7, maxRate: 3.2 });
+    const flexibleOption = optionFixture({ saveTrm: 12, rsrvType: 'F', baseRate: 2.5, maxRate: 3.0 });
+    const product = productFixture({ options: [fixedOption, flexibleOption] });
+
+    assert.equal(findRateOption(product, 12, 'S'), fixedOption);
+    assert.equal(findRateOption(product, 12, 'F'), flexibleOption);
   });
 
   it('holds full-data invariants for representative condition subsets', () => {
@@ -296,6 +321,10 @@ describe('my-rate calculation', () => {
             result.clamped,
             toBp(option.baseRate) + result.appliedBp > toBp(option.maxRate),
           );
+          assert.equal(
+            result.clampedAwayBp,
+            Math.max(0, toBp(option.baseRate) + result.appliedBp - result.myRateBp),
+          );
           assert.equal(result.excluded.every((item) => !isCountable(item)), true);
           assert.equal(result.applied.every(isCountable), true);
           assert.equal(result.unapplied.every(isCountable), true);
@@ -304,3 +333,22 @@ describe('my-rate calculation', () => {
     }
   });
 });
+
+function formatRateFromBp(rateBp: number, fixedTwoDecimals = false): string {
+  const integerPart = Math.trunc(rateBp / 100);
+  const fractionalPart = rateBp % 100;
+
+  if (fixedTwoDecimals) {
+    return `${integerPart}.${String(fractionalPart).padStart(2, '0')}`;
+  }
+
+  if (fractionalPart === 0) {
+    return String(integerPart);
+  }
+
+  if (fractionalPart % 10 === 0) {
+    return `${integerPart}.${fractionalPart / 10}`;
+  }
+
+  return `${integerPart}.${String(fractionalPart).padStart(2, '0')}`;
+}

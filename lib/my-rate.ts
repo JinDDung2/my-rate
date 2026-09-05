@@ -1,5 +1,5 @@
 import type { CheckableConditionCode, ReserveType, TermMonths } from '@/lib/calc-input';
-import type { Product, RateOption, SpecialCondition } from '@/lib/types';
+import type { ConditionCode, Product, RateOption, SpecialCondition } from '@/lib/types';
 import { CONDITION_CODES } from '@/lib/types';
 
 export interface MyRateResult {
@@ -40,7 +40,7 @@ export function calculateMyRate(
   option: RateOption,
   selected: readonly CheckableConditionCode[],
 ): MyRateResult {
-  const selectedCodes = new Set<string>(selected);
+  const selectedCodes = new Set<ConditionCode>(selected);
   const indexedConditions = product.conditions.map((condition, index) => ({ condition, index }));
 
   indexedConditions.sort((a, b) => {
@@ -78,7 +78,7 @@ export function calculateMyRate(
     maxRate: option.maxRate,
     appliedBp,
     clamped: unclampedRateBp > maxRateBp,
-    clampedAwayBp: Math.max(0, unclampedRateBp - maxRateBp),
+    clampedAwayBp: Math.max(0, unclampedRateBp - myRateBp),
     applied,
     unapplied,
     excluded,
