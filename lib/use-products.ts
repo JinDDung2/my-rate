@@ -3,13 +3,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ProductsResponse } from '@/lib/types';
 
-type ProductsState =
+export type ProductsState =
+  | { status: 'loading'; data: null; error: null; reload: () => void }
+  | { status: 'success'; data: ProductsResponse; error: null; reload: () => void }
+  | { status: 'error'; data: null; error: Error; reload: () => void };
+
+type ProductsLoadState =
   | { status: 'loading'; data: null; error: null }
   | { status: 'success'; data: ProductsResponse; error: null }
   | { status: 'error'; data: null; error: Error };
 
-export function useProducts() {
-  const [state, setState] = useState<ProductsState>({
+export function useProducts(): ProductsState {
+  const [state, setState] = useState<ProductsLoadState>({
     status: 'loading',
     data: null,
     error: null,
