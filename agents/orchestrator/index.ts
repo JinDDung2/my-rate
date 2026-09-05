@@ -28,11 +28,17 @@ import {
 const MAX_REVIEW_ROUNDS = 2;
 const HANDOFF_DIR = 'docs/records/handoffs';
 
-/** /review.md 규칙: 문제 없으면 "없음"이라고 명확히 쓰게 했으므로 그 문구로만 판단한다. */
+/**
+ * /review.md 규칙: 문제 없으면 "## Findings" 아래에 "없음"이라고만 쓰게 했다.
+ * 부분 문자열로 "없음"을 찾으면 "React key 충돌 없음" 같은 정상 서술에도 오탐한다
+ * (2026-09-05 이슈 #1 첫 실행에서 실제로 발생 — 진짜 결함이 있었는데 리뷰 통과로 오판했다).
+ * Findings 섹션 전체가 "없음" 한 마디뿐일 때만 통과로 본다.
+ */
 function isReviewClean(review: string): boolean {
   const findingsSection = review.split(/##\s*Findings/i)[1] ?? '';
   const body = findingsSection.split(/##\s*(Questions|Test Gaps|Summary)/i)[0] ?? findingsSection;
-  return /없음/.test(body.trim()) || body.trim().length === 0;
+  const cleaned = body.trim();
+  return cleaned.length === 0 || /^없음[.。]?$/.test(cleaned);
 }
 
 async function main(): Promise<void> {
