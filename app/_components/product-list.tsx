@@ -14,7 +14,7 @@ function ProductRow({ product }: { product: Product }) {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-medium text-slate-600">{product.companyName}</p>
-          <h2 className="mt-1 text-lg font-semibold text-slate-950">{product.productName}</h2>
+          <h3 className="mt-1 text-lg font-semibold text-slate-950">{product.productName}</h3>
         </div>
         <p className="text-sm text-slate-500">{product.joinWay}</p>
       </div>
@@ -61,9 +61,9 @@ export function ProductList() {
           <p className="text-sm font-medium text-slate-600">
             데이터 기준: {formatDisclosureMonth(products.data.disclosureMonth)}
           </p>
-          <h1 id="products-heading" className="mt-2 text-3xl font-bold text-slate-950">
+          <h2 id="products-heading" className="mt-2 text-3xl font-bold text-slate-950">
             적금 상품 목록
-          </h1>
+          </h2>
         </div>
         <p className="text-sm text-slate-500">총 {products.data.products.length}개 상품</p>
       </div>

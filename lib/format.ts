@@ -3,3 +3,7 @@ export function formatDisclosureMonth(disclosureMonth: string): string {
 
   return `${disclosureMonth.slice(0, 4)}-${disclosureMonth.slice(4, 6)}`;
 }
+
+export function formatKrw(value: number): string {
+  return new Intl.NumberFormat('ko-KR').format(value);
+}
