@@ -25,7 +25,9 @@ export function runClaudePlan(prompt: string, cwd: string): string {
     { cwd },
   );
   if (result.status !== 0) {
-    throw new Error(`claude 실행 실패 (exit ${result.status})\n${result.stderr}`);
+    throw new Error(
+      `claude 실행 실패 (exit ${result.status})\nstderr: ${result.stderr}\nstdout: ${result.stdout.slice(0, 2000)}`,
+    );
   }
   let parsed: { result?: string };
   try {
@@ -53,7 +55,9 @@ export function runCodexImplement(prompt: string, cwd: string): string {
     '-o', outFile,
   ]);
   if (result.status !== 0) {
-    throw new Error(`codex 실행 실패 (exit ${result.status})\n${result.stderr}`);
+    throw new Error(
+      `codex 실행 실패 (exit ${result.status})\nstderr: ${result.stderr}\nstdout: ${result.stdout.slice(0, 2000)}`,
+    );
   }
   try {
     return readFileSync(outFile, 'utf-8');
