@@ -27,12 +27,7 @@ export function useProducts() {
       setState({ status: 'loading', data: null, error: null });
 
       try {
-        const forceInitialError =
-          process.env.NODE_ENV !== 'production' &&
-          requestId === 0 &&
-          new URLSearchParams(window.location.search).get('forceError') === '1';
-        const endpoint = forceInitialError ? '/api/products?forceError=1' : '/api/products';
-        const response = await fetch(endpoint, {
+        const response = await fetch('/api/products', {
           signal: controller.signal,
           cache: 'no-store',
         });
