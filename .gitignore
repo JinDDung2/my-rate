@@ -141,3 +141,9 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Local Docker CLI auth/session state
+.docker-auth/
+
+# Codex 격리 작업트리 (agents/orchestrator) — 브랜치는 origin에 남으므로 로컬 전용
+.worktrees/

@@ -9,7 +9,8 @@
     "build:products": "tsx scripts/build-products.ts",
     "mark:reviewed": "tsx scripts/mark-reviewed.ts",
     "check:reviewed": "tsx scripts/check-reviewed.ts",
-    "build": "npm run check:reviewed"
+    "build": "npm run check:reviewed",
+    "orchestrate": "tsx agents/orchestrator/index.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
