@@ -2,6 +2,7 @@
 
 import { CHECKABLE_CONDITION_CODES, CONDITION_META } from '@/lib/conditions';
 import {
+  RESERVE_TYPE_LABELS,
   TERM_OPTIONS,
   type CalcInput,
   type CheckableConditionCode,
@@ -21,10 +22,7 @@ interface ConditionPanelProps {
   onConditionToggle: (value: CheckableConditionCode) => void;
 }
 
-const RESERVE_TYPE_OPTIONS: { value: ReserveType; label: string }[] = [
-  { value: 'S', label: '정액적립' },
-  { value: 'F', label: '자유적립' },
-];
+const RESERVE_TYPE_OPTIONS: ReserveType[] = ['S', 'F'];
 
 export function ConditionPanel({
   input,
@@ -45,9 +43,9 @@ export function ConditionPanel({
     >
       <div className="mb-6">
         <p className="text-sm font-medium text-slate-600">[A] 입력 패널</p>
-        <h1 id="condition-panel-heading" className="mt-2 text-2xl font-bold text-slate-950">
+        <h2 id="condition-panel-heading" className="mt-2 text-2xl font-bold text-slate-950">
           내 적금 조건
-        </h1>
+        </h2>
       </div>
 
       <div className="grid gap-6">
@@ -127,21 +125,21 @@ export function ConditionPanel({
         <fieldset>
           <legend className="text-sm font-semibold text-slate-900">적립 방식</legend>
           <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {RESERVE_TYPE_OPTIONS.map((option) => (
+            {RESERVE_TYPE_OPTIONS.map((reserveType) => (
               <label
                 className="flex min-h-12 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 has-[:checked]:border-slate-950 has-[:checked]:bg-slate-950 has-[:checked]:text-white"
-                htmlFor={`reserve-${option.value}`}
-                key={option.value}
+                htmlFor={`reserve-${reserveType}`}
+                key={reserveType}
               >
                 <input
-                  checked={input.reserveType === option.value}
+                  checked={input.reserveType === reserveType}
                   className="h-4 w-4"
-                  id={`reserve-${option.value}`}
+                  id={`reserve-${reserveType}`}
                   name="reserve-type"
-                  onChange={() => onReserveTypeChange(option.value)}
+                  onChange={() => onReserveTypeChange(reserveType)}
                   type="radio"
                 />
-                {option.label}
+                {RESERVE_TYPE_LABELS[reserveType]}
               </label>
             ))}
           </div>
@@ -170,7 +168,7 @@ export function ConditionPanel({
           <div className="mt-2 flex min-h-12 items-center justify-between gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600">
             <span>{CONDITION_META.OTHER.label}</span>
             <span className="shrink-0 rounded border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-600">
-              계산 제외
+              선택 불가
             </span>
           </div>
         </fieldset>

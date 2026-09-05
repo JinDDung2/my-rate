@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react';
 import {
   clampMonthlyAmount,
   DEFAULT_CALC_INPUT,
+  MONTHLY_AMOUNT_MAX,
+  MONTHLY_AMOUNT_MIN,
   MONTHLY_AMOUNT_STEP,
   parseMonthlyAmount,
   toggleCondition as toggleConditionValue,
@@ -12,13 +14,14 @@ import {
   type ReserveType,
   type TermMonths,
 } from '@/lib/calc-input';
+import { formatKrw } from '@/lib/format';
 
 function getAmountError(text: string): string | null {
   const result = parseMonthlyAmount(text);
   if (result.ok) return null;
 
   if (result.reason === 'out-of-range') {
-    return '10,000원 ~ 1,000,000원 사이로 입력해 주세요';
+    return `${formatKrw(MONTHLY_AMOUNT_MIN)}원 ~ ${formatKrw(MONTHLY_AMOUNT_MAX)}원 사이로 입력해 주세요`;
   }
 
   if (result.reason === 'not-a-step') {
@@ -40,26 +43,24 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     const result = parseMonthlyAmount(nextText);
     if (!result.ok) return;
 
-    setInput((current) => ({
-      ...current,
-      monthlyAmount: result.value,
-    }));
-  }, []);
-
-  const stepAmount = useCallback((direction: -1 | 1) => {
     setInput((current) => {
-      const monthlyAmount = clampMonthlyAmount(
-        current.monthlyAmount + direction * MONTHLY_AMOUNT_STEP,
-      );
-      setAmountTextState(String(monthlyAmount));
-      setAmountError(null);
+      if (current.monthlyAmount === result.value) return current;
 
       return {
         ...current,
-        monthlyAmount,
+        monthlyAmount: result.value,
       };
     });
   }, []);
+
+  const stepAmount = useCallback((direction: -1 | 1) => {
+    const monthlyAmount = clampMonthlyAmount(input.monthlyAmount + direction * MONTHLY_AMOUNT_STEP);
+    if (monthlyAmount === input.monthlyAmount) return;
+
+    setAmountTextState(String(monthlyAmount));
+    setAmountError(null);
+    setInput((current) => ({ ...current, monthlyAmount }));
+  }, [input.monthlyAmount]);
 
   const setTermMonths = useCallback((termMonths: TermMonths) => {
     setInput((current) => ({ ...current, termMonths }));

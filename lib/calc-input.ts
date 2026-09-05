@@ -17,6 +17,11 @@ export const MONTHLY_AMOUNT_MIN = 10_000;
 export const MONTHLY_AMOUNT_MAX = 1_000_000;
 export const MONTHLY_AMOUNT_STEP = 10_000;
 
+export const RESERVE_TYPE_LABELS: Record<ReserveType, string> = {
+  S: '정액적립',
+  F: '자유적립',
+};
+
 export const DEFAULT_CALC_INPUT: CalcInput = {
   monthlyAmount: 500_000,
   termMonths: 12,
@@ -33,14 +38,18 @@ export function parseMonthlyAmount(text: string): MonthlyAmountParseResult {
     return { ok: false, reason: 'empty' };
   }
 
-  const digits = text.replace(/\D/g, '');
+  if (!/^[\d,]+$/.test(text)) {
+    return { ok: false, reason: 'not-a-number' };
+  }
+
+  const digits = text.replaceAll(',', '');
   if (digits === '') {
     return { ok: false, reason: 'not-a-number' };
   }
 
   const value = Number.parseInt(digits, 10);
   if (!Number.isSafeInteger(value)) {
-    return { ok: false, reason: 'not-a-number' };
+    return { ok: false, reason: 'out-of-range' };
   }
 
   if (value < MONTHLY_AMOUNT_MIN || value > MONTHLY_AMOUNT_MAX) {

@@ -2,13 +2,10 @@
 
 import { ConditionPanel } from '@/app/_components/condition-panel';
 import { ProductList } from '@/app/_components/product-list';
+import { RESERVE_TYPE_LABELS } from '@/lib/calc-input';
 import { CONDITION_META } from '@/lib/conditions';
 import { useCalcInput } from '@/lib/use-calc-input';
 import { formatKrw } from '@/lib/format';
-
-function formatReserveType(value: 'S' | 'F'): string {
-  return value === 'S' ? '정액적립' : '자유적립';
-}
 
 export function Calculator() {
   const calcInput = useCalcInput();
@@ -36,7 +33,7 @@ export function Calculator() {
         </h2>
         <p className="mt-2 text-base text-slate-800">
           월 {formatKrw(input.monthlyAmount)}원 · {input.termMonths}개월 ·{' '}
-          {formatReserveType(input.reserveType)} · 선택 조건 {input.selectedConditions.length}개
+          {RESERVE_TYPE_LABELS[input.reserveType]} · 선택 조건 {input.selectedConditions.length}개
         </p>
         {input.selectedConditions.length > 0 ? (
           <p className="mt-2 text-sm text-slate-600">

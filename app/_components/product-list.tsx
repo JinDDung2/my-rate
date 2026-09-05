@@ -61,9 +61,9 @@ export function ProductList() {
           <p className="text-sm font-medium text-slate-600">
             데이터 기준: {formatDisclosureMonth(products.data.disclosureMonth)}
           </p>
-          <h1 id="products-heading" className="mt-2 text-3xl font-bold text-slate-950">
+          <h2 id="products-heading" className="mt-2 text-3xl font-bold text-slate-950">
             적금 상품 목록
-          </h1>
+          </h2>
         </div>
         <p className="text-sm text-slate-500">총 {products.data.products.length}개 상품</p>
       </div>
