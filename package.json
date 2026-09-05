@@ -10,6 +10,7 @@
     "build:products": "tsx scripts/build-products.ts",
     "mark:reviewed": "tsx scripts/mark-reviewed.ts",
     "check:reviewed": "tsx scripts/check-reviewed.ts",
+    "test": "node --import tsx --test lib/**/*.test.ts",
     "build": "npm run check:reviewed && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

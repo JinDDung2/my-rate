@@ -1,7 +1,7 @@
 'use client';
 
 import { formatDisclosureMonth } from '@/lib/format';
-import { useProducts } from '@/lib/use-products';
+import type { ProductsState } from '@/lib/use-products';
 import type { Product, RateOption } from '@/lib/types';
 
 function formatRateOption(option: RateOption): string {
@@ -32,9 +32,7 @@ function ProductRow({ product }: { product: Product }) {
   );
 }
 
-export function ProductList() {
-  const products = useProducts();
-
+export function ProductList({ products }: { products: ProductsState }) {
   if (products.status === 'loading') {
     return <p className="py-10 text-slate-600">상품 데이터를 불러오는 중입니다.</p>;
   }
