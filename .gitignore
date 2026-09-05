@@ -147,3 +147,6 @@ vite.config.ts.timestamp-*
 
 # Codex 격리 작업트리 (agents/orchestrator) — 브랜치는 origin에 남으므로 로컬 전용
 .worktrees/
+
+# Claude Code 개인 권한 설정 (사용자별로 다름, 공유하지 않음)
+.claude/settings.local.json

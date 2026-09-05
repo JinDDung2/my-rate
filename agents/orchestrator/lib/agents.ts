@@ -35,15 +35,14 @@ export function runClaudePlan(prompt: string, cwd: string): string {
 
 /**
  * cwd는 반드시 격리된 워크트리 디렉터리여야 한다 (worktree.ts 참고).
- * workspace-write 샌드박스로 cwd 밖 파일 쓰기를 막아, 실수로 본 저장소를
- * 건드리는 사고를 구조적으로 방지한다.
+ * --approve-for-me는 승인 요청을 자동 검토로 돌리면서 workspace-write 샌드박스를
+ * 강제한다 (cwd 밖 파일 쓰기 차단) — codex CLI가 `--sandbox`와 동시 지정을 막는다.
  */
 export function runCodexImplement(prompt: string, cwd: string): string {
   const outFile = join(mkdtempSync(join(tmpdir(), 'codex-out-')), 'last-message.txt');
   const result = run('codex', [
     'exec', prompt,
     '--cd', cwd,
-    '--sandbox', 'workspace-write',
     '--approve-for-me',
     '-o', outFile,
   ]);
