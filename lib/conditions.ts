@@ -1,7 +1,18 @@
 import type { ConditionCode } from '@/lib/types';
 import { CONDITION_CODES } from '@/lib/types';
 
-export const CONDITION_META: Record<ConditionCode, { label: string; checkboxLabel: string }> = {
+type CheckableConditionMeta = {
+  label: string;
+  checkboxLabel: string;
+};
+
+type InformationalConditionMeta = {
+  label: string;
+};
+
+export const CONDITION_META: {
+  [Code in Exclude<ConditionCode, 'OTHER'>]: CheckableConditionMeta;
+} & { OTHER: InformationalConditionMeta } = {
   SALARY_TRANSFER: {
     label: '급여이체',
     checkboxLabel: '이 은행으로 급여를 받고 있어요',
@@ -36,7 +47,6 @@ export const CONDITION_META: Record<ConditionCode, { label: string; checkboxLabe
   },
   OTHER: {
     label: '기타(계산 제외)',
-    checkboxLabel: '(체크 불가, 정보 표시용)',
   },
 };
 

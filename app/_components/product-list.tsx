@@ -14,7 +14,7 @@ function ProductRow({ product }: { product: Product }) {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-medium text-slate-600">{product.companyName}</p>
-          <h2 className="mt-1 text-lg font-semibold text-slate-950">{product.productName}</h2>
+          <h3 className="mt-1 text-lg font-semibold text-slate-950">{product.productName}</h3>
         </div>
         <p className="text-sm text-slate-500">{product.joinWay}</p>
       </div>

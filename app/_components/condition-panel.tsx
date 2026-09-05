@@ -34,7 +34,9 @@ export function ConditionPanel({
   onReserveTypeChange,
   onConditionToggle,
 }: ConditionPanelProps) {
-  const amountDescriptionId = amountError ? 'monthly-amount-error' : 'monthly-amount-help';
+  const amountDescriptionId = amountError
+    ? 'monthly-amount-error monthly-amount-help'
+    : 'monthly-amount-help';
 
   return (
     <section
@@ -88,15 +90,16 @@ export function ConditionPanel({
               </button>
             </div>
           </div>
-          {amountError ? (
-            <p className="mt-2 text-sm font-medium text-red-700" id="monthly-amount-error" role="alert">
-              {amountError}
-            </p>
-          ) : (
-            <p className="mt-2 text-sm text-slate-600" id="monthly-amount-help">
+          <div className="mt-2 grid gap-1">
+            {amountError ? (
+              <p className="text-sm font-medium text-red-700" id="monthly-amount-error" role="alert">
+                {amountError}
+              </p>
+            ) : null}
+            <p className="text-sm text-slate-600" id="monthly-amount-help">
               계산 적용 금액: {formatKrw(input.monthlyAmount)}원
             </p>
-          )}
+          </div>
         </div>
 
         <fieldset>

@@ -34,15 +34,17 @@ export type MonthlyAmountParseResult =
   | { ok: false; reason: 'empty' | 'not-a-number' | 'out-of-range' | 'not-a-step' };
 
 export function parseMonthlyAmount(text: string): MonthlyAmountParseResult {
-  if (text.trim() === '') {
+  const normalizedText = text.trim();
+
+  if (normalizedText === '') {
     return { ok: false, reason: 'empty' };
   }
 
-  if (!/^[\d,]+$/.test(text)) {
+  if (!/^[\d,]+$/.test(normalizedText)) {
     return { ok: false, reason: 'not-a-number' };
   }
 
-  const digits = text.replaceAll(',', '');
+  const digits = normalizedText.replaceAll(',', '');
   if (digits === '') {
     return { ok: false, reason: 'not-a-number' };
   }

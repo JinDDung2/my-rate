@@ -55,12 +55,12 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
 
   const stepAmount = useCallback((direction: -1 | 1) => {
     const monthlyAmount = clampMonthlyAmount(input.monthlyAmount + direction * MONTHLY_AMOUNT_STEP);
-    if (monthlyAmount === input.monthlyAmount) return;
+    if (monthlyAmount === input.monthlyAmount && amountText === String(input.monthlyAmount)) return;
 
     setAmountTextState(String(monthlyAmount));
     setAmountError(null);
     setInput((current) => ({ ...current, monthlyAmount }));
-  }, [input.monthlyAmount]);
+  }, [amountText, input.monthlyAmount]);
 
   const setTermMonths = useCallback((termMonths: TermMonths) => {
     setInput((current) => ({ ...current, termMonths }));
