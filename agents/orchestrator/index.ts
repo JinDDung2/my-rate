@@ -29,16 +29,21 @@ const MAX_REVIEW_ROUNDS = 2;
 const HANDOFF_DIR = 'docs/records/handoffs';
 
 /**
- * /review.md 규칙: 문제 없으면 "## Findings" 아래에 "없음"이라고만 쓰게 했다.
- * 부분 문자열로 "없음"을 찾으면 "React key 충돌 없음" 같은 정상 서술에도 오탐한다
- * (2026-09-05 이슈 #1 첫 실행에서 실제로 발생 — 진짜 결함이 있었는데 리뷰 통과로 오판했다).
- * Findings 섹션 전체가 "없음" 한 마디뿐일 때만 통과로 본다.
+ * /review.md 규칙: 문제 없으면 "## Findings" 아래에 "없음"이라고 쓰게 했다.
+ *
+ * 첫 줄만 검사한다. 두 가지 오탐을 둘 다 겪었다:
+ * - 부분 문자열 검사(포함 여부)는 "React key 충돌 없음" 같은 정상 서술에도 걸린다
+ *   (이슈 #1, 실제 결함이 있었는데 통과로 오판).
+ * - 전체 일치 검사("없음" 한 마디뿐이어야 통과)는 "없음." 뒤에 확인 근거를 덧붙인
+ *   정상적인 클린 리뷰를 놓친다 (이슈 #6, 실제로는 깨끗한데 불필요한 재작업 라운드 유발).
+ * 첫 줄이 "없음"으로 시작하는지만 보면 두 경우 모두 올바르게 판단된다 — 실제
+ * 지적사항은 항상 "1. ...", "**1...**" 같은 항목으로 시작하지 "없음"으로 시작하지 않는다.
  */
 function isReviewClean(review: string): boolean {
   const findingsSection = review.split(/##\s*Findings/i)[1] ?? '';
   const body = findingsSection.split(/##\s*(Questions|Test Gaps|Summary)/i)[0] ?? findingsSection;
-  const cleaned = body.trim();
-  return cleaned.length === 0 || /^없음[.。]?$/.test(cleaned);
+  const firstLine = body.trim().split('\n')[0]?.trim() ?? '';
+  return firstLine.length === 0 || /^없음[.。]?$/.test(firstLine);
 }
 
 async function main(): Promise<void> {
