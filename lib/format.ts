@@ -7,3 +7,7 @@ export function formatDisclosureMonth(disclosureMonth: string): string {
 export function formatKrw(value: number): string {
   return new Intl.NumberFormat('ko-KR').format(value);
 }
+
+export function formatRateBpPercentPoint(rateBp: number): string {
+  return `${Number((rateBp / 100).toFixed(2))}%p`;
+}
