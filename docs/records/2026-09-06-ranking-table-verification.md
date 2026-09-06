@@ -12,7 +12,7 @@ Issue #5 adds the pure ranking module and replaces the temporary calculator prev
 - Ranking rows are sorted by:
   - `afterTaxInterest` descending
   - matched `option.baseRate` descending
-  - `finPrdtCd` ascending for deterministic final order
+  - `finPrdtCd` ascending with direct string comparison for deterministic, locale-independent final order
 - The UI renders a semantic table with `caption` and `th scope="col"`, and uses horizontal overflow for narrow screens.
 
 ## Decisions
@@ -21,10 +21,11 @@ Issue #5 adds the pure ranking module and replaces the temporary calculator prev
 - `세후실수령` is interpreted as after-tax interest, not maturity amount, because the glossary defines `실수령 이자` as maturity interest minus 15.4% tax. Maturity amount remains out of scope for #6 detail UI.
 - `광고금리` uses the matched option's `maxRate`; `내금리` uses `calculateMyRate(...).myRate`.
 - The row keeps `option`, `myRateResult`, and full `interest` objects in addition to display fields so #6/#7 can reuse the same calculation output without re-running lower-level logic.
+- Review follow-up removed `localeCompare` from the final tie-breaker and changed the test assertion to direct code-point order. The test suite also now covers the `reserveType: 'F'` path and the no-match `[]` module result.
 
 ## Verification Results
 
-- `npm test` passed: 31 tests, 31 pass. The runner picked up `lib/ranking.test.ts`, `lib/my-rate.test.ts`, and `lib/interest.test.ts`.
+- `npm test` passed: 33 tests, 33 pass. The runner picked up `lib/ranking.test.ts`, `lib/my-rate.test.ts`, and `lib/interest.test.ts`.
 - `npm run typecheck` passed.
 - `npm run build` first failed inside the sandbox because `tsx` could not listen on its temp IPC pipe. Running the same command outside the sandbox passed. The log showed `check:reviewed` before `next build`, with `검수 완료 확인: 전 43건 reviewed: true`.
 - `npm run dev -- --port 3001` first failed inside the sandbox because localhost listen was denied. Running outside the sandbox served `http://localhost:3001`; `curl -I /` returned `200 OK`, and `GET /api/products` returned disclosure month `202608` with 43 products.

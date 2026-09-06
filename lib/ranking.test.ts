@@ -73,7 +73,7 @@ function assertSortedByRankingRules(rows: ReturnType<typeof buildRanking>) {
       previous.afterTaxInterest === current.afterTaxInterest &&
       previous.option.baseRate === current.option.baseRate
     ) {
-      assert.ok(previous.finPrdtCd.localeCompare(current.finPrdtCd) <= 0);
+      assert.ok(previous.finPrdtCd <= current.finPrdtCd);
     }
     assert.equal(current.rank, index + 1);
   }
@@ -97,6 +97,37 @@ describe('ranking calculation', () => {
     const rows = buildRanking([wrongTermOnly, matching, wrongReserveOnly], input());
 
     assert.deepEqual(rows.map((row) => row.finPrdtCd), ['MATCH']);
+  });
+
+  it('returns an empty ranking when no product has a matching option', () => {
+    const wrongTermOnly = productFixture({
+      finPrdtCd: 'WRONG_TERM',
+      options: [optionFixture({ saveTrm: 18, rsrvType: 'S' })],
+    });
+    const wrongReserveOnly = productFixture({
+      finPrdtCd: 'WRONG_RESERVE',
+      options: [optionFixture({ saveTrm: 12, rsrvType: 'F' })],
+    });
+
+    const rows = buildRanking([wrongTermOnly, wrongReserveOnly], input());
+
+    assert.deepEqual(rows, []);
+  });
+
+  it('filters and ranks free-reserve options when reserveType is F', () => {
+    const freeReserve = productFixture({
+      finPrdtCd: 'FREE_RESERVE',
+      options: [optionFixture({ rsrvType: 'F', baseRate: 3, maxRate: 4 })],
+    });
+    const fixedReserve = productFixture({
+      finPrdtCd: 'FIXED_RESERVE',
+      options: [optionFixture({ rsrvType: 'S', baseRate: 4, maxRate: 5 })],
+    });
+
+    const rows = buildRanking([fixedReserve, freeReserve], input({ reserveType: 'F' }));
+
+    assert.deepEqual(rows.map((row) => row.finPrdtCd), ['FREE_RESERVE']);
+    assert.equal(rows[0].option.rsrvType, 'F');
   });
 
   it('sorts real products by after-tax interest descending', () => {
@@ -138,17 +169,17 @@ describe('ranking calculation', () => {
 
   it('uses finPrdtCd as the deterministic tie-breaker when interest and base rate are identical', () => {
     const second = productFixture({
-      finPrdtCd: 'B002',
+      finPrdtCd: 'A_1',
       options: [optionFixture({ baseRate: 3, maxRate: 4 })],
     });
     const first = productFixture({
-      finPrdtCd: 'A001',
+      finPrdtCd: 'A-1',
       options: [optionFixture({ baseRate: 3, maxRate: 4 })],
     });
 
     const rows = buildRanking([second, first], input());
 
-    assert.deepEqual(rows.map((row) => row.finPrdtCd), ['A001', 'B002']);
+    assert.deepEqual(rows.map((row) => row.finPrdtCd), ['A-1', 'A_1']);
     assert.deepEqual(rows.map((row) => row.rank), [1, 2]);
   });
 

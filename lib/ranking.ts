@@ -18,6 +18,12 @@ export interface RankingRow {
 
 type UnrankedRow = Omit<RankingRow, 'rank'>;
 
+function compareCodePointAscending(a: string, b: string): number {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
 export function buildRanking(products: readonly Product[], input: CalcInput): RankingRow[] {
   const rows: UnrankedRow[] = products.flatMap((product) => {
     const option = findRateOption(product, input.termMonths, input.reserveType);
@@ -55,7 +61,7 @@ export function buildRanking(products: readonly Product[], input: CalcInput): Ra
       return b.option.baseRate - a.option.baseRate;
     }
 
-    return a.finPrdtCd.localeCompare(b.finPrdtCd);
+    return compareCodePointAscending(a.finPrdtCd, b.finPrdtCd);
   });
 
   return rows.map((row, index) => ({
