@@ -361,4 +361,26 @@ describe('top product summary', () => {
     assert.equal(summary.advertisedLeader.maxRate, 4.1);
     assert.equal(summary.differsFromAdvertised, true);
   });
+
+  it('keeps the real-data demo difference when salary transfer is selected', () => {
+    const rows = buildRanking(
+      products,
+      input({
+        monthlyAmount: 500_000,
+        termMonths: 12,
+        reserveType: 'S',
+        selectedConditions: ['SALARY_TRANSFER'],
+      }),
+    );
+    const summary = buildTopProductSummary(rows);
+
+    assert.ok(summary);
+    assert.equal(summary.myLeader.finPrdtCd, '10-01-30-031-0036');
+    assert.equal(summary.myLeader.myRate, 3.6);
+    assert.equal(summary.myLeader.afterTaxInterest, 98982);
+    assert.equal(summary.advertisedLeader.finPrdtCd, 'TD11330030000');
+    assert.equal(summary.advertisedLeader.maxRate, 4.1);
+    assert.equal(summary.advertisedLeader.myRate, 2.2);
+    assert.equal(summary.differsFromAdvertised, true);
+  });
 });
