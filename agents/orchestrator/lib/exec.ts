@@ -10,9 +10,14 @@ export interface RunResult {
   status: number;
 }
 
-export function run(cmd: string, args: string[], opts: { cwd?: string } = {}): RunResult {
+export function run(
+  cmd: string,
+  args: string[],
+  opts: { cwd?: string; env?: NodeJS.ProcessEnv } = {},
+): RunResult {
   const result = spawnSync(cmd, args, {
     cwd: opts.cwd,
+    env: opts.env ?? process.env,
     encoding: 'utf-8',
     maxBuffer: 1024 * 1024 * 64,
   });
