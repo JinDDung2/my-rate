@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { ActionListCard } from '@/app/_components/action-list-card';
 import { ConditionPanel } from '@/app/_components/condition-panel';
 import { ProductList } from '@/app/_components/product-list';
 import { RankingTable } from '@/app/_components/ranking-table';
@@ -65,6 +66,10 @@ export function Calculator() {
       {rankingRows ? <RankingTable rows={rankingRows} /> : null}
 
       {rankingRows && rankingRows.length > 0 ? <TopProductCard rankingRows={rankingRows} /> : null}
+
+      {rankingRows && rankingRows.length > 0 && products.status === 'success' ? (
+        <ActionListCard rankingRows={rankingRows} products={products.data.products} input={input} />
+      ) : null}
 
       <ProductList products={products} />
     </div>
