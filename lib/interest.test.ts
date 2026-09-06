@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { calculateInterest, type InterestParams, type InterestResult } from './interest';
 
@@ -127,16 +128,32 @@ describe('interest calculation', () => {
     for (const annualRate of [0.01, 0.03, 0.045, 0.12]) {
       for (const months of [6, 12, 24, 36]) {
         for (const monthlyDeposit of [10_000, 500_000, 1_000_000]) {
+          const simple = calculateInterest(params(monthlyDeposit, months, annualRate, 'S'));
+          const compound = calculateInterest(params(monthlyDeposit, months, annualRate, 'M'));
+
+          assert.ok(
+            compound.pretaxInterest >= simple.pretaxInterest,
+            `${monthlyDeposit}/${months}/${annualRate} expected M >= S`,
+          );
+
           for (const interestType of ['S', 'M'] as const) {
             const input = params(monthlyDeposit, months, annualRate, interestType);
             const result = calculateInterest(input);
 
             assert.equal(Number.isInteger(result.pretaxInterest), true);
+            assert.equal(Math.round(result.pretaxInterest), result.pretaxInterest);
             assertDerivedValues(input, result);
           }
         }
       }
     }
+  });
+
+  it('uses Math.round only once in the interest module', () => {
+    const source = readFileSync(new URL('./interest.ts', import.meta.url), 'utf8');
+    const roundCalls = source.match(/Math\.round/g) ?? [];
+
+    assert.equal(roundCalls.length, 1);
   });
 
   it('guards non-positive deposit or month inputs with zero interest', () => {
