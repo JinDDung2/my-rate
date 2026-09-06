@@ -107,9 +107,9 @@ export function SituationInput({ onConditionsParsed }: SituationInputProps) {
           value={text}
         />
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs text-slate-500">{text.trim().length}/280</span>
+          <span className="text-xs text-slate-600">{text.trim().length}/280</span>
           <button
-            className="h-10 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+            className="h-10 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-600"
             disabled={isLoading || text.trim().length === 0}
             type="submit"
           >
@@ -133,7 +133,7 @@ export function SituationInput({ onConditionsParsed }: SituationInputProps) {
           <span>자연어 입력을 적용하지 못했어요. 아래 조건을 직접 선택해 주세요.</span>
           <button
             aria-label="알림 닫기"
-            className="shrink-0 text-red-900 underline underline-offset-2"
+            className="shrink-0 rounded-sm text-red-900 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
             onClick={() => setShowErrorToast(false)}
             type="button"
           >

@@ -54,15 +54,15 @@ export function ConditionPanel({
         </h2>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid min-w-0 gap-6">
         <SituationInput onConditionsParsed={onConditionsApply} />
 
         <div>
           <label className="text-sm font-semibold text-slate-900" htmlFor="monthly-amount">
             월 납입액
           </label>
-          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-            <div className="relative flex-1">
+          <div className="mt-2 flex min-w-0 flex-col gap-2 sm:flex-row">
+            <div className="relative min-w-0 flex-1">
               <input
                 aria-describedby={amountDescriptionId}
                 aria-invalid={amountError ? true : undefined}
@@ -73,14 +73,14 @@ export function ConditionPanel({
                 type="text"
                 value={amountText}
               />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-600">
                 원
               </span>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:w-32">
               <button
                 aria-label="월 납입액 1만원 줄이기"
-                className="h-12 rounded-md border border-slate-300 bg-slate-50 text-lg font-semibold text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                className="h-12 rounded-md border border-slate-300 bg-slate-50 text-lg font-semibold text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
                 onClick={() => onAmountStep(-1)}
                 type="button"
               >
@@ -88,7 +88,7 @@ export function ConditionPanel({
               </button>
               <button
                 aria-label="월 납입액 1만원 늘리기"
-                className="h-12 rounded-md border border-slate-300 bg-slate-50 text-lg font-semibold text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                className="h-12 rounded-md border border-slate-300 bg-slate-50 text-lg font-semibold text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
                 onClick={() => onAmountStep(1)}
                 type="button"
               >
@@ -119,7 +119,7 @@ export function ConditionPanel({
               >
                 <input
                   checked={input.termMonths === termMonths}
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
                   id={`term-${termMonths}`}
                   name="term-months"
                   onChange={() => onTermMonthsChange(termMonths)}
@@ -142,7 +142,7 @@ export function ConditionPanel({
               >
                 <input
                   checked={input.reserveType === reserveType}
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
                   id={`reserve-${reserveType}`}
                   name="reserve-type"
                   onChange={() => onReserveTypeChange(reserveType)}
@@ -165,7 +165,7 @@ export function ConditionPanel({
               >
                 <input
                   checked={input.selectedConditions.includes(code)}
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
                   id={`cond-${code}`}
                   onChange={() => onConditionToggle(code)}
                   type="checkbox"

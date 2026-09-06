@@ -12,7 +12,7 @@ interface ConditionListProps {
 
 function ConditionList({ conditions }: ConditionListProps) {
   if (conditions.length === 0) {
-    return <p className="text-sm text-slate-500">없음</p>;
+    return <p className="text-sm text-slate-600">없음</p>;
   }
 
   return (
@@ -122,7 +122,7 @@ export function TopProductCard({ rankingRows }: TopProductCardProps) {
       ) : null}
 
       <details className="mt-5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-        <summary className="cursor-pointer text-sm font-medium text-slate-800">
+        <summary className="cursor-pointer rounded-sm text-sm font-medium text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2">
           근거 원문 보기 ▾
         </summary>
         <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">

@@ -52,13 +52,13 @@ export function ShareButton({ input }: ShareButtonProps) {
 
   return (
     <div className="border-t border-slate-200 pt-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <p className="text-sm font-semibold text-slate-900">결과 공유</p>
           <p className="mt-1 text-sm text-slate-600">현재 입력 상태를 담은 링크를 복사합니다.</p>
         </div>
         <button
-          className="h-11 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          className="h-11 w-full rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 sm:w-auto"
           onClick={handleCopy}
           type="button"
         >

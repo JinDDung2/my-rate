@@ -18,7 +18,7 @@ export function RankingTable({ rows }: RankingTableProps) {
             세후이자 순위
           </h2>
         </div>
-        <p className="text-sm text-slate-500">{rows.length}개 상품</p>
+        <p className="text-sm text-slate-600">{rows.length}개 상품</p>
       </div>
 
       {rows.length === 0 ? (
@@ -26,7 +26,12 @@ export function RankingTable({ rows }: RankingTableProps) {
           선택한 기간에 해당하는 상품이 없습니다.
         </p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
+        <div
+          aria-label="세후이자 랭킹 테이블 가로 스크롤 영역"
+          className="mt-4 overflow-x-auto rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+          role="region"
+          tabIndex={0}
+        >
           <table className="min-w-[720px] w-full border-collapse text-left text-sm">
             <caption className="sr-only">
               사용자가 입력한 월 납입액, 기간, 적립 방식, 우대조건 기준 세후이자 랭킹
