@@ -1,5 +1,6 @@
 'use client';
 
+import { SituationInput } from '@/app/_components/situation-input';
 import { CHECKABLE_CONDITION_CODES, CONDITION_META } from '@/lib/conditions';
 import {
   RESERVE_TYPE_LABELS,
@@ -20,6 +21,7 @@ interface ConditionPanelProps {
   onTermMonthsChange: (value: TermMonths) => void;
   onReserveTypeChange: (value: ReserveType) => void;
   onConditionToggle: (value: CheckableConditionCode) => void;
+  onConditionsApply: (value: CheckableConditionCode[]) => void;
 }
 
 const RESERVE_TYPE_OPTIONS: ReserveType[] = ['S', 'F'];
@@ -33,6 +35,7 @@ export function ConditionPanel({
   onTermMonthsChange,
   onReserveTypeChange,
   onConditionToggle,
+  onConditionsApply,
 }: ConditionPanelProps) {
   const amountDescriptionId = amountError
     ? 'monthly-amount-error monthly-amount-help'
@@ -51,6 +54,8 @@ export function ConditionPanel({
       </div>
 
       <div className="grid gap-6">
+        <SituationInput onConditionsParsed={onConditionsApply} />
+
         <div>
           <label className="text-sm font-semibold text-slate-900" htmlFor="monthly-amount">
             월 납입액
