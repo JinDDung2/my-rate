@@ -85,6 +85,12 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     }));
   }, []);
 
+  const hydrate = useCallback((next: CalcInput) => {
+    setInput(next);
+    setAmountTextState(String(next.monthlyAmount));
+    setAmountError(null);
+  }, []);
+
   return {
     input,
     amountText,
@@ -95,5 +101,6 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     setReserveType,
     toggleCondition,
     applyConditions,
+    hydrate,
   };
 }

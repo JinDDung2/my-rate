@@ -91,3 +91,10 @@ export function applyConditions(
 export function clampMonthlyAmount(value: number): number {
   return Math.min(MONTHLY_AMOUNT_MAX, Math.max(MONTHLY_AMOUNT_MIN, value));
 }
+
+export function snapMonthlyAmount(value: number): number {
+  const clampedValue = clampMonthlyAmount(value);
+  const snappedValue = Math.round(clampedValue / MONTHLY_AMOUNT_STEP) * MONTHLY_AMOUNT_STEP;
+
+  return clampMonthlyAmount(snappedValue);
+}

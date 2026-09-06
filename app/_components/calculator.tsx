@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ActionListCard } from '@/app/_components/action-list-card';
 import { ConditionPanel } from '@/app/_components/condition-panel';
 import { ProductList } from '@/app/_components/product-list';
@@ -11,12 +11,22 @@ import { CONDITION_META } from '@/lib/conditions';
 import { useCalcInput } from '@/lib/use-calc-input';
 import { formatKrw } from '@/lib/format';
 import { buildRanking } from '@/lib/ranking';
+import { hasCalcInputQueryKeys, parseCalcInputFromQuery } from '@/lib/share-url';
 import { useProducts } from '@/lib/use-products';
 
 export function Calculator() {
   const calcInput = useCalcInput();
   const { input } = calcInput;
+  const { hydrate } = calcInput;
   const products = useProducts();
+
+  useEffect(() => {
+    const search = window.location.search;
+    if (!hasCalcInputQueryKeys(search)) return;
+
+    hydrate(parseCalcInputFromQuery(search));
+  }, [hydrate]);
+
   const rankingRows = useMemo(() => {
     if (products.status !== 'success') {
       return null;
