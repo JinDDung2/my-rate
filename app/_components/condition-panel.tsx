@@ -1,6 +1,7 @@
 'use client';
 
 import { SituationInput } from '@/app/_components/situation-input';
+import { ShareButton } from '@/app/_components/share-button';
 import { CHECKABLE_CONDITION_CODES, CONDITION_META } from '@/lib/conditions';
 import {
   RESERVE_TYPE_LABELS,
@@ -180,6 +181,8 @@ export function ConditionPanel({
             </span>
           </div>
         </fieldset>
+
+        <ShareButton input={input} />
       </div>
     </section>
   );
