@@ -1,7 +1,9 @@
+import { APIConnectionTimeoutError, APIUserAbortError } from '@anthropic-ai/sdk';
 import { CONDITION_CODES, type ConditionCode } from '@/lib/types';
 
 export const PARSE_SITUATION_TEXT_MAX_LENGTH = 280;
 export const PARSE_SITUATION_SUMMARY_MAX_LENGTH = 200;
+export const PARSE_SITUATION_DEFAULT_SUMMARY = '입력한 상황을 바탕으로 우대조건을 확인했어요.';
 
 export interface ParseSituationRequest {
   text: string;
@@ -77,10 +79,11 @@ export function normalizeSituationOutput(output: unknown): ParseSituationRespons
     conditionSet.add(value as ConditionCode);
   }
 
-  const summary =
+  const rawSummary =
     typeof record.summary === 'string'
       ? record.summary.trim().slice(0, PARSE_SITUATION_SUMMARY_MAX_LENGTH)
       : '';
+  const summary = rawSummary.length > 0 ? rawSummary : PARSE_SITUATION_DEFAULT_SUMMARY;
 
   return {
     conditions: CONDITION_CODES.filter((code) => conditionSet.has(code)),
@@ -111,6 +114,7 @@ export async function parseSituation(
 }
 
 function isTimeoutError(error: unknown): boolean {
+  if (error instanceof APIUserAbortError || error instanceof APIConnectionTimeoutError) return true;
   if (!(error instanceof Error)) return false;
   return error.name === 'AbortError' || error.name === 'TimeoutError';
 }

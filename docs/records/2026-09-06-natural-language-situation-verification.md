@@ -5,8 +5,9 @@
 - `lib/parse-situation.ts`
   - 요청 텍스트 검증: trim 후 1자 이상, 최대 280자.
   - LLM 출력 정규화: `CONDITION_CODES` 화이트리스트, 중복 제거, 표준 순서 정렬.
-  - `summary`는 문자열만 허용하고 trim 후 최대 200자로 클램프.
+  - `summary`는 문자열만 허용하고 trim 후 최대 200자로 클램프하며, 빈 값이면 기본 성공 요약으로 대체한다.
   - LLM 호출자는 `SituationLlmCaller`로 주입해 네트워크 없이 테스트한다.
+  - SDK의 `APIUserAbortError`, `APIConnectionTimeoutError`와 네이티브 abort 이름을 타임아웃으로 분류한다.
 - `lib/rate-limit.ts`
   - IP별 1분 10회 고정 윈도우 인메모리 리미터.
   - `now()` 클록 주입 가능.
@@ -52,12 +53,12 @@
 npm test
 ```
 
-- 통과: 68개 테스트.
+- 통과: 70개 테스트.
 - 신규 커버:
   - 비문자열/빈 문자열/공백/상한 초과 요청 검증.
   - 알 수 없는 코드 제거, 중복 제거, 표준 순서 정렬.
-  - `summary` 비문자열 처리와 200자 클램프.
-  - 주입 LLM 성공, `parsed_output === null`, throw, abort 실패 분기.
+  - `summary` 비문자열/공백 기본값 처리와 200자 클램프.
+  - 주입 LLM 성공, `parsed_output === null`, throw, 실제 SDK abort/connection timeout, 네이티브 abort 실패 분기.
   - 레이트 리밋 10회 허용/11회 차단, 윈도우 리셋, IP별 격리.
   - `applyConditions` 합집합 병합, 기존 선택 보존, `OTHER` 제외, 표준 순서 유지.
 
@@ -107,6 +108,7 @@ rg "ANTHROPIC_API_KEY|new Anthropic|@anthropic-ai/sdk" .next/static
 
 - 입력 길이 상한: 280자. 1~3문장 자유 입력을 받되 과도한 입력과 비용을 제한하기 위한 MVP 값.
 - 요약 클램프: 200자. 화면에 표시되는 LLM 텍스트 길이를 서버에서 제한한다.
+- 기본 성공 요약: `입력한 상황을 바탕으로 우대조건을 확인했어요.`. LLM이 빈 문자열 또는 비문자열 요약을 반환해도 성공 피드백 패널이 렌더되게 한다.
 - 모델 기본값: `claude-sonnet-5`. `PARSE_SITUATION_MODEL`로 오버라이드 가능.
 - SDK 자동 재시도는 `new Anthropic({ maxRetries: 0 })`와 요청 옵션 `maxRetries: 0`로 비활성화한다.
 - 서버 타임아웃: `AbortSignal.timeout(5000)`.

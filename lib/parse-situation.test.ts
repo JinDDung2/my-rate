@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { APIConnectionTimeoutError, APIUserAbortError } from '@anthropic-ai/sdk';
 import { applyConditions } from './calc-input';
 import {
   normalizeSituationOutput,
   parseSituation,
+  PARSE_SITUATION_DEFAULT_SUMMARY,
   PARSE_SITUATION_SUMMARY_MAX_LENGTH,
   PARSE_SITUATION_TEXT_MAX_LENGTH,
   validateSituationText,
@@ -48,13 +50,20 @@ describe('situation output normalization', () => {
     });
   });
 
-  it('clamps summary and coerces non-string summary to an empty string', () => {
+  it('clamps summary and falls back when summary is blank or non-string', () => {
     const longSummary = '가'.repeat(PARSE_SITUATION_SUMMARY_MAX_LENGTH + 10);
     assert.equal(
       normalizeSituationOutput({ conditions: [], summary: longSummary })?.summary.length,
       PARSE_SITUATION_SUMMARY_MAX_LENGTH,
     );
-    assert.equal(normalizeSituationOutput({ conditions: [], summary: 123 })?.summary, '');
+    assert.equal(
+      normalizeSituationOutput({ conditions: [], summary: 123 })?.summary,
+      PARSE_SITUATION_DEFAULT_SUMMARY,
+    );
+    assert.equal(
+      normalizeSituationOutput({ conditions: [], summary: '   ' })?.summary,
+      PARSE_SITUATION_DEFAULT_SUMMARY,
+    );
   });
 
   it('rejects missing condition arrays', () => {
@@ -94,6 +103,22 @@ describe('parse situation orchestration', () => {
   });
 
   it('returns timeout when the llm caller aborts', async () => {
+    const result = await parseSituation('급여이체 해요', async () => {
+      throw new APIUserAbortError();
+    });
+
+    assert.deepEqual(result, { ok: false, error: 'timeout' });
+  });
+
+  it('returns timeout when the sdk reports a connection timeout', async () => {
+    const result = await parseSituation('급여이체 해요', async () => {
+      throw new APIConnectionTimeoutError();
+    });
+
+    assert.deepEqual(result, { ok: false, error: 'timeout' });
+  });
+
+  it('keeps native abort errors classified as timeout', async () => {
     const error = new Error('aborted');
     error.name = 'AbortError';
     const result = await parseSituation('급여이체 해요', async () => {
