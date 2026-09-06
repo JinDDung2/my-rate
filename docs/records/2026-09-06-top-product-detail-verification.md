@@ -21,7 +21,7 @@ Issue #6 adds the `[C] 1위 상품 상세 카드` below the ranking table.
 - The advertised leader is calculated only from rows that passed the current term and reserve-type filter. Products outside that candidate set cannot be compared on the user's selected calculation input.
 - Product equality uses `finPrdtCd` because `findRateOption` produces one matched option per product row for the current input.
 - `%p` formatting divides basis points by 100 and trims trailing zeroes through numeric conversion: `50 -> 0.5%p`, `25 -> 0.25%p`, `100 -> 1%p`.
-- F-09 unexplained preferential-rate notice and F-08 evidence/original-text disclosure are intentionally not rendered here. They remain scoped to #8.
+- F-09 unexplained preferential-rate notice and evidence/original-text disclosure are intentionally not rendered here. They remain scoped to #8.
 
 ## Demo Cases
 
@@ -36,12 +36,11 @@ Issue #6 adds the `[C] 1위 상품 상세 카드` below the ranking table.
 
 ## Verification Results
 
-- `npm test` passed: 38 tests, 38 pass. New coverage includes advertised-leader deterministic ordering, equal leaders, different leaders, empty rows, and the real-data differing-leader case.
+- `npm test` passed: 42 tests, 42 pass. New coverage includes advertised-leader deterministic ordering, equal leaders, different leaders, empty rows, and the real-data differing-leader case.
+- Review follow-up added direct coverage for `formatRateBpPercentPoint` (`100 -> 1%p`, `50 -> 0.5%p`, `25 -> 0.25%p`, `10 -> 0.1%p`) and server-render coverage for the top-product card badge, empty-list fallback, condition lists, and `excluded` omission.
 - `npm run typecheck` passed.
-- `npm run build` first failed in the sandbox because `tsx` could not listen on its temp IPC pipe.
-- Running `npm run build` outside the sandbox then passed `check:reviewed` but failed because this worktree had no local `node_modules` and Turbopack could not resolve `next/package.json`.
-- `npm run build -- --webpack` passed against the parent dependency layout.
-- After `npm ci --prefer-offline --ignore-scripts` created local locked dependencies, the default `npm run build` passed with Turbopack. The log showed `검수 완료 확인: 전 43건 reviewed: true`, successful compile, TypeScript, and static page generation.
+- `npm run build` first failed in the sandbox because `tsx` could not listen on its temp IPC pipe. Re-running the same command outside the sandbox passed with `검수 완료 확인: 전 43건 reviewed: true`, successful Turbopack compile, TypeScript, and static page generation.
+- Earlier implementation verification also confirmed `npm run build -- --webpack` and the default Turbopack build after local locked dependencies were installed.
 - `npm run dev -- --port 3001` served `http://localhost:3001`; `curl -I /` returned `200 OK`.
 - `/api/products` returned `200 OK` with disclosure month `202608` and the product payload. The body was large in terminal output, but the response contained the expected 43-product dataset.
 - Browser automation was not available: `npm ls playwright @playwright/test --depth=0` returned empty. Therefore the 375px visual layout check was not automated in this worktree.

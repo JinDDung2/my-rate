@@ -101,7 +101,7 @@ export function TopProductCard({ rankingRows }: TopProductCardProps) {
         </div>
       </div>
 
-      {/* F-09 미해석 우대폭 고지와 F-08 근거 원문 보기는 #8에서 배선한다. */}
+      {/* F-09 미해석 우대폭 고지와 근거 원문 보기는 #8에서 배선한다. */}
     </section>
   );
 }
