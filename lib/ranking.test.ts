@@ -6,7 +6,7 @@ import { DEFAULT_CALC_INPUT } from './calc-input';
 import { CHECKABLE_CONDITION_CODES } from './conditions';
 import { calculateInterest } from './interest';
 import { calculateMyRate, findRateOption } from './my-rate';
-import { buildRanking } from './ranking';
+import { buildRanking, buildTopProductSummary, findAdvertisedLeader } from './ranking';
 import type { Product, RateOption, SpecialCondition } from './types';
 
 const products = productsData.products as Product[];
@@ -263,5 +263,85 @@ describe('ranking calculation', () => {
       assert.equal(row.myRate, myRateResult.myRate);
       assert.equal(row.afterTaxInterest, interest.afterTaxInterest);
     }
+  });
+});
+
+describe('top product summary', () => {
+  it('finds the advertised leader deterministically regardless of input order', () => {
+    const codePointFirst = productFixture({
+      finPrdtCd: 'A_AD',
+      options: [optionFixture({ baseRate: 2, maxRate: 5 })],
+    });
+    const codePointSecond = productFixture({
+      finPrdtCd: 'B_AD',
+      options: [optionFixture({ baseRate: 2, maxRate: 5 })],
+    });
+
+    const rows = buildRanking([codePointSecond, codePointFirst], input());
+    const reversedRows = [...rows].reverse();
+
+    assert.equal(findAdvertisedLeader(rows)?.finPrdtCd, 'A_AD');
+    assert.equal(findAdvertisedLeader(reversedRows)?.finPrdtCd, 'A_AD');
+  });
+
+  it('reports no difference when the after-tax leader is also the advertised leader', () => {
+    const sharedLeader = productFixture({
+      finPrdtCd: 'SHARED_LEADER',
+      options: [optionFixture({ baseRate: 4, maxRate: 5 })],
+    });
+    const follower = productFixture({
+      finPrdtCd: 'FOLLOWER',
+      options: [optionFixture({ baseRate: 3, maxRate: 4 })],
+    });
+
+    const summary = buildTopProductSummary(buildRanking([follower, sharedLeader], input()));
+
+    assert.ok(summary);
+    assert.equal(summary.myLeader.finPrdtCd, 'SHARED_LEADER');
+    assert.equal(summary.advertisedLeader.finPrdtCd, 'SHARED_LEADER');
+    assert.equal(summary.differsFromAdvertised, false);
+  });
+
+  it('reports a difference when the advertised max-rate leader is not the after-tax leader', () => {
+    const myLeader = productFixture({
+      finPrdtCd: 'MY_LEADER',
+      options: [optionFixture({ baseRate: 4, maxRate: 4 })],
+    });
+    const advertisedLeader = productFixture({
+      finPrdtCd: 'AD_LEADER',
+      options: [optionFixture({ baseRate: 2, maxRate: 5 })],
+    });
+
+    const summary = buildTopProductSummary(buildRanking([advertisedLeader, myLeader], input()));
+
+    assert.ok(summary);
+    assert.equal(summary.myLeader.finPrdtCd, 'MY_LEADER');
+    assert.equal(summary.advertisedLeader.finPrdtCd, 'AD_LEADER');
+    assert.equal(summary.differsFromAdvertised, true);
+  });
+
+  it('returns null for an empty ranking', () => {
+    assert.equal(findAdvertisedLeader([]), null);
+    assert.equal(buildTopProductSummary([]), null);
+  });
+
+  it('finds a real-data case where the advertised leader differs from the after-tax leader', () => {
+    const rows = buildRanking(
+      products,
+      input({
+        monthlyAmount: 500_000,
+        termMonths: 12,
+        reserveType: 'S',
+        selectedConditions: [],
+      }),
+    );
+    const summary = buildTopProductSummary(rows);
+
+    assert.ok(summary);
+    assert.equal(summary.myLeader.finPrdtCd, '10-01-30-031-0036');
+    assert.equal(summary.myLeader.myRate, 3.6);
+    assert.equal(summary.advertisedLeader.finPrdtCd, 'TD11330030000');
+    assert.equal(summary.advertisedLeader.maxRate, 4.1);
+    assert.equal(summary.differsFromAdvertised, true);
   });
 });

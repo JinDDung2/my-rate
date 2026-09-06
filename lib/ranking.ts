@@ -16,6 +16,12 @@ export interface RankingRow {
   interest: InterestResult;
 }
 
+export interface TopProductSummary {
+  myLeader: RankingRow;
+  advertisedLeader: RankingRow;
+  differsFromAdvertised: boolean;
+}
+
 type UnrankedRow = Omit<RankingRow, 'rank'>;
 
 function compareCodePointAscending(a: string, b: string): number {
@@ -68,4 +74,33 @@ export function buildRanking(products: readonly Product[], input: CalcInput): Ra
     rank: index + 1,
     ...row,
   }));
+}
+
+export function findAdvertisedLeader(rows: readonly RankingRow[]): RankingRow | null {
+  if (rows.length === 0) return null;
+
+  return [...rows].sort((a, b) => {
+    if (b.option.maxRate !== a.option.maxRate) {
+      return b.option.maxRate - a.option.maxRate;
+    }
+
+    if (b.option.baseRate !== a.option.baseRate) {
+      return b.option.baseRate - a.option.baseRate;
+    }
+
+    return compareCodePointAscending(a.finPrdtCd, b.finPrdtCd);
+  })[0];
+}
+
+export function buildTopProductSummary(rows: readonly RankingRow[]): TopProductSummary | null {
+  const myLeader = rows[0] ?? null;
+  const advertisedLeader = findAdvertisedLeader(rows);
+
+  if (!myLeader || !advertisedLeader) return null;
+
+  return {
+    myLeader,
+    advertisedLeader,
+    differsFromAdvertised: myLeader.finPrdtCd !== advertisedLeader.finPrdtCd,
+  };
 }

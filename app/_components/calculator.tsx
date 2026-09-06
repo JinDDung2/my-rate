@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { ConditionPanel } from '@/app/_components/condition-panel';
 import { ProductList } from '@/app/_components/product-list';
 import { RankingTable } from '@/app/_components/ranking-table';
+import { TopProductCard } from '@/app/_components/top-product-card';
 import { RESERVE_TYPE_LABELS } from '@/lib/calc-input';
 import { CONDITION_META } from '@/lib/conditions';
 import { useCalcInput } from '@/lib/use-calc-input';
@@ -62,6 +63,8 @@ export function Calculator() {
       </section>
 
       {rankingRows ? <RankingTable rows={rankingRows} /> : null}
+
+      {rankingRows && rankingRows.length > 0 ? <TopProductCard rankingRows={rankingRows} /> : null}
 
       <ProductList products={products} />
     </div>
