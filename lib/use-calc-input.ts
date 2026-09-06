@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from 'react';
 import {
-  applyConditions as applyConditionsValue,
   clampMonthlyAmount,
   DEFAULT_CALC_INPUT,
   MONTHLY_AMOUNT_MAX,
@@ -78,13 +77,6 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     }));
   }, []);
 
-  const applyConditions = useCallback((codes: readonly CheckableConditionCode[]) => {
-    setInput((current) => ({
-      ...current,
-      selectedConditions: applyConditionsValue(current.selectedConditions, codes),
-    }));
-  }, []);
-
   const hydrate = useCallback((next: CalcInput) => {
     setInput(next);
     setAmountTextState(String(next.monthlyAmount));
@@ -100,7 +92,6 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     setTermMonths,
     setReserveType,
     toggleCondition,
-    applyConditions,
     hydrate,
   };
 }
