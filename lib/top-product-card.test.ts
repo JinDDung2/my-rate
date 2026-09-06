@@ -26,6 +26,8 @@ function row(overrides: Partial<RankingRow> = {}): RankingRow {
     finPrdtCd: 'MY_LEADER',
     companyName: '테스트은행',
     productName: '테스트적금',
+    rawSpecialCondition: '비대면 가입 시 우대\n급여 이체 실적 우대\n기타 안내 문구',
+    unexplainedBp: 0,
     maxRate: 3.7,
     myRate: 3.6,
     afterTaxInterest: 98_982,
@@ -92,9 +94,16 @@ describe('TopProductCard', () => {
     assert.match(markup, /충족 O/);
     assert.match(markup, /비대면 가입/);
     assert.match(markup, /0\.5%p/);
+    assert.match(markup, /비대면 가입 evidence/);
     assert.match(markup, /미충족 X/);
     assert.match(markup, /급여 이체/);
     assert.match(markup, /0\.25%p/);
+    assert.match(markup, /급여 이체 evidence/);
+    assert.equal(markup.match(/AI 해석/g)?.length, 2);
+    assert.match(markup, /<details/);
+    assert.match(markup, /근거 원문 보기 ▾/);
+    assert.match(markup, /비대면 가입 시 우대/);
+    assert.match(markup, /급여 이체 실적 우대/);
     assert.match(markup, /광고 1위와 다릅니다/);
     assert.doesNotMatch(markup, /기타 조건/);
   });
@@ -113,7 +122,22 @@ describe('TopProductCard', () => {
 
     assert.doesNotMatch(markup, /광고 1위와 다릅니다/);
     assert.equal(markup.match(/없음/g)?.length, 2);
+    assert.doesNotMatch(markup, /AI 해석/);
     assert.doesNotMatch(markup, /기타 조건/);
+  });
+
+  it('renders the unexplained preferential-rate notice only above 5bp', () => {
+    const noticed = render([row({ unexplainedBp: 60 })]);
+    const threshold = render([row({ unexplainedBp: 5 })]);
+
+    assert.match(noticed, /미해석 우대폭 0\.6%p \(미반영\)/);
+    assert.match(
+      noticed,
+      /공시상 최대 0\.6%p의 추가 우대가 있으나 조건을 특정할 수 없어/,
+    );
+    assert.match(noticed, /반영하지 않았습니다/);
+    assert.doesNotMatch(threshold, /미해석 우대폭/);
+    assert.doesNotMatch(threshold, /조건을 특정할 수 없어/);
   });
 
   it('renders nothing for an empty ranking', () => {

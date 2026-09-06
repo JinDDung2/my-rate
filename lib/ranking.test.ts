@@ -259,10 +259,27 @@ describe('ranking calculation', () => {
 
       assert.equal(row.companyName, product.companyName);
       assert.equal(row.productName, product.productName);
+      assert.equal(row.rawSpecialCondition, product.rawSpecialCondition);
+      assert.equal(row.unexplainedBp, product.unexplainedBp);
       assert.equal(row.maxRate, option.maxRate);
       assert.equal(row.myRate, myRateResult.myRate);
       assert.equal(row.afterTaxInterest, interest.afterTaxInterest);
     }
+  });
+
+  it('carries unexplainedBp without adding it to myRate', () => {
+    const product = productFixture({
+      unexplainedBp: 250,
+      conditions: [condition('SALARY_TRANSFER', 30)],
+      options: [optionFixture({ baseRate: 2.4, maxRate: 5.2 })],
+    });
+
+    const [row] = buildRanking([product], input({ selectedConditions: ['SALARY_TRANSFER'] }));
+
+    assert.equal(row.unexplainedBp, 250);
+    assert.equal(row.myRateResult.appliedBp, 30);
+    assert.equal(row.myRateResult.myRateBp, 270);
+    assert.equal(row.myRate, 2.7);
   });
 });
 

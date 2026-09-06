@@ -16,16 +16,24 @@ function ConditionList({ conditions }: ConditionListProps) {
   }
 
   return (
-    <ul className="flex flex-wrap gap-2">
+    <ul className="grid gap-2">
       {conditions.map((condition, index) => (
         <li
-          className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-sm text-slate-700"
+          className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
           key={`${condition.code}-${condition.label}-${condition.rateBp}-${index}`}
         >
-          {condition.label}{' '}
-          <span className="font-medium tabular-nums text-slate-950">
-            {formatRateBpPercentPoint(condition.rateBp)}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-medium text-slate-900">{condition.label}</span>
+            <span className="font-medium tabular-nums text-slate-950">
+              {formatRateBpPercentPoint(condition.rateBp)}
+            </span>
+            <span className="inline-flex items-center rounded border border-sky-200 bg-sky-50 px-1.5 py-0.5 text-xs font-medium text-sky-900">
+              AI 해석
+            </span>
+          </div>
+          <p className="mt-1 whitespace-pre-wrap text-xs leading-5 text-slate-600">
+            {condition.evidence}
+          </p>
         </li>
       ))}
     </ul>
@@ -38,6 +46,8 @@ export function TopProductCard({ rankingRows }: TopProductCardProps) {
   if (!summary) return null;
 
   const { myLeader, differsFromAdvertised } = summary;
+  const shouldShowUnexplainedNotice = myLeader.unexplainedBp > 5;
+  const unexplainedRateText = formatRateBpPercentPoint(myLeader.unexplainedBp);
 
   return (
     <section
@@ -101,7 +111,24 @@ export function TopProductCard({ rankingRows }: TopProductCardProps) {
         </div>
       </div>
 
-      {/* F-09 미해석 우대폭 고지와 근거 원문 보기는 #8에서 배선한다. */}
+      {shouldShowUnexplainedNotice ? (
+        <div className="mt-5 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+          <p className="font-semibold">미해석 우대폭 {unexplainedRateText} (미반영)</p>
+          <p className="mt-1">
+            공시상 최대 {unexplainedRateText}의 추가 우대가 있으나 조건을 특정할 수 없어
+            반영하지 않았습니다
+          </p>
+        </div>
+      ) : null}
+
+      <details className="mt-5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+        <summary className="cursor-pointer text-sm font-medium text-slate-800">
+          근거 원문 보기 ▾
+        </summary>
+        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+          {myLeader.rawSpecialCondition}
+        </p>
+      </details>
     </section>
   );
 }

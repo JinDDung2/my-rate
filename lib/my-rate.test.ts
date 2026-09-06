@@ -252,6 +252,8 @@ describe('my-rate calculation', () => {
 
     assert.equal(result.appliedBp, 20);
     assert.equal(result.myRate, 2.5);
+    assert.equal(result.myRateBp, toBp(2.3) + 20);
+    assert.notEqual(result.myRateBp, toBp(2.3) + 20 + product.unexplainedBp);
     assert.ok(result.myRate < result.maxRate);
   });
 

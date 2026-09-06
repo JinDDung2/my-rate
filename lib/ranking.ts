@@ -8,6 +8,8 @@ export interface RankingRow {
   finPrdtCd: string;
   companyName: string;
   productName: string;
+  rawSpecialCondition: string;
+  unexplainedBp: number;
   maxRate: number;
   myRate: number;
   afterTaxInterest: number;
@@ -48,6 +50,8 @@ export function buildRanking(products: readonly Product[], input: CalcInput): Ra
         finPrdtCd: product.finPrdtCd,
         companyName: product.companyName,
         productName: product.productName,
+        rawSpecialCondition: product.rawSpecialCondition,
+        unexplainedBp: product.unexplainedBp,
         maxRate: option.maxRate,
         myRate: myRateResult.myRate,
         afterTaxInterest: interest.afterTaxInterest,
