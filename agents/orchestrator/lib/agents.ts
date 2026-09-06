@@ -17,12 +17,19 @@ import { run } from './exec.js';
  * 모델이 그 흐름을 타려다 실패하거나(exit 1), 계획을 `~/.claude/plans/*.md` 파일에
  * 써버리고 `result`엔 안내 문구만 남기는 경우가 실제로 발생했다 — 3회 중 2회 재현.
  * `--disallowedTools`로 도구만 막으면 이 경로 자체가 생기지 않는다.
+ *
+ * `ANTHROPIC_API_KEY`는 자식 프로세스에 물려주지 않는다. `.env`(scripts/extract-conditions.ts용)를
+ * `dotenv/config`로 로드하면 이 프로세스의 `process.env`에 들어가고, 그대로 상속하면
+ * `claude` CLI가 사용자의 claude.ai 구독 로그인 대신 그 키의 종량제 API 크레딧을 쓴다
+ * ("ANTHROPIC_API_KEY ... takes precedence over your claude.ai login"). 2026-09-06 밤,
+ * 이걸 몰라서 오케스트레이터가 구독이 아니라 API 크레딧을 밤새 깎아 잔액을 바닥냈다.
  */
 export function runClaudePlan(prompt: string, cwd: string): string {
+  const { ANTHROPIC_API_KEY: _unused, ...envWithoutApiKey } = process.env;
   const result = run(
     'claude',
     ['-p', prompt, '--disallowedTools', 'Edit,Write,NotebookEdit', '--output-format', 'json'],
-    { cwd },
+    { cwd, env: envWithoutApiKey },
   );
   if (result.status !== 0) {
     throw new Error(
