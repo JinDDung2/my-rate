@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { SiteDisclaimer } from '@/app/_components/site-disclaimer';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body className="flex min-h-[100dvh] flex-col">
+        {children}
+        <SiteDisclaimer />
+      </body>
     </html>
   );
 }

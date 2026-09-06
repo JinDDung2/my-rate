@@ -16,7 +16,7 @@ function ProductRow({ product }: { product: Product }) {
           <p className="text-sm font-medium text-slate-600">{product.companyName}</p>
           <h3 className="mt-1 text-lg font-semibold text-slate-950">{product.productName}</h3>
         </div>
-        <p className="text-sm text-slate-500">{product.joinWay}</p>
+        <p className="text-sm text-slate-600">{product.joinWay}</p>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {product.options.map((option) => (
@@ -42,7 +42,7 @@ export function ProductList({ products }: { products: ProductsState }) {
       <div className="py-10">
         <p className="font-medium text-red-700">데이터를 불러오지 못했습니다</p>
         <button
-          className="mt-4 rounded bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+          className="mt-4 rounded bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
           onClick={products.reload}
           type="button"
         >
@@ -63,7 +63,7 @@ export function ProductList({ products }: { products: ProductsState }) {
             적금 상품 목록
           </h2>
         </div>
-        <p className="text-sm text-slate-500">총 {products.data.products.length}개 상품</p>
+        <p className="text-sm text-slate-600">총 {products.data.products.length}개 상품</p>
       </div>
       <ul className="divide-y divide-slate-200 bg-slate-50">
         {products.data.products.map((product) => (
