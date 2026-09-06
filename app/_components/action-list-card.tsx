@@ -10,6 +10,20 @@ interface ActionListCardProps {
   input: CalcInput;
 }
 
+function objectParticle(label: string): '을' | '를' {
+  const lastChar = label.trim().at(-1);
+
+  if (!lastChar) return '를';
+
+  const code = lastChar.charCodeAt(0);
+  const hangulStart = '가'.charCodeAt(0);
+  const hangulEnd = '힣'.charCodeAt(0);
+
+  if (code < hangulStart || code > hangulEnd) return '를';
+
+  return (code - hangulStart) % 28 === 0 ? '를' : '을';
+}
+
 export function ActionListCard({ rankingRows, products, input }: ActionListCardProps) {
   const topRow = rankingRows[0];
 
@@ -39,7 +53,8 @@ export function ActionListCard({ rankingRows, products, input }: ActionListCardP
         {actions.map((action) => (
           <li className="flex items-center justify-between gap-4 py-3" key={action.code}>
             <span className="text-sm font-medium text-slate-800">
-              {action.label}를 추가하면
+              {action.label}
+              {objectParticle(action.label)} 추가하면
             </span>
             <span className="shrink-0 text-base font-semibold tabular-nums text-slate-950">
               +{formatKrw(action.afterTaxInterestDelta)}원

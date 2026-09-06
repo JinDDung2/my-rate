@@ -26,7 +26,7 @@ Issue #7 adds the `[D] 액션 리스트` card below the top-product detail card.
 
 - A1 is kept: the target product is the user's current after-tax-interest leader, `rankingRows[0]`. There is no selected-product route yet. The extension point is already present because `buildActionList` accepts arbitrary `(product, option, input)`.
 - A2 is kept: if all conditions are already satisfied or all candidate deltas are clamped to 0, the card renders nothing.
-- The UI text follows the handoff format `{label}를 추가하면 +{formatKrw(delta)}원`.
+- The UI text follows the handoff intent with a Korean object particle selected from the label ending: `{label}{을/를} 추가하면 +{formatKrw(delta)}원`.
 - Combination simulation is intentionally absent. Tests compare the single-condition delta against a multi-condition scenario to guard this.
 - Evidence source text and selected-product UI remain out of scope for this issue.
 

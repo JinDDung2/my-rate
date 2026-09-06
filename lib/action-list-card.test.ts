@@ -89,14 +89,14 @@ describe('ActionListCard', () => {
 
     assert.match(markup, /aria-labelledby="action-list-heading"/);
     assert.match(markup, /\[D\] 액션 리스트/);
-    assert.match(markup, /카드 실적를 추가하면/);
+    assert.match(markup, /카드 실적을 추가하면/);
     assert.match(markup, /\+13,748원/);
     assert.match(markup, /첫 거래를 추가하면/);
     assert.match(markup, /\+10,998원/);
     assert.match(markup, /자동이체를 추가하면/);
     assert.match(markup, /\+5,499원/);
     assert.doesNotMatch(markup, /급여이체를 추가하면/);
-    assert.ok(markup.indexOf('카드 실적를 추가하면') < markup.indexOf('첫 거래를 추가하면'));
+    assert.ok(markup.indexOf('카드 실적을 추가하면') < markup.indexOf('첫 거래를 추가하면'));
     assert.ok(markup.indexOf('첫 거래를 추가하면') < markup.indexOf('자동이체를 추가하면'));
   });
 
@@ -113,7 +113,7 @@ describe('ActionListCard', () => {
     });
     const markup = render(buildRanking([product], calcInput), [product], calcInput);
 
-    assert.equal(markup.match(/를 추가하면/g)?.length, 3);
+    assert.equal(markup.match(/[을를] 추가하면/g)?.length, 3);
   });
 
   it('renders nothing for empty rankings, missing products, and fully satisfied conditions', () => {
