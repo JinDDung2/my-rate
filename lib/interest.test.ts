@@ -37,6 +37,9 @@ describe('interest calculation', () => {
     const result = calculateInterest(input);
 
     assert.equal(result.pretaxInterest, 19_500);
+    assert.equal(result.tax, 3_003);
+    assert.equal(result.afterTaxInterest, 16_497);
+    assert.equal(result.maturityAmount, 1_216_497);
     assertDerivedValues(input, result);
   });
 
@@ -45,13 +48,27 @@ describe('interest calculation', () => {
     const result = calculateInterest(input);
 
     assert.equal(result.pretaxInterest, 1_000);
+    assert.equal(result.tax, 154);
+    assert.equal(result.afterTaxInterest, 846);
+    assert.equal(result.maturityAmount, 100_846);
+    assertDerivedValues(input, result);
+  });
+
+  it('pins a monthly compound pretax interest example from the spec formula', () => {
+    const input = params(100_000, 36, 0.05, 'M');
+    const result = calculateInterest(input);
+
+    assert.equal(result.pretaxInterest, 291_481);
+    assert.equal(result.tax, 44_888);
+    assert.equal(result.afterTaxInterest, 246_593);
+    assert.equal(result.maturityAmount, 3_846_593);
     assertDerivedValues(input, result);
   });
 
   it('T3 keeps monthly compound pretax interest greater than or equal to simple interest', () => {
     const cases = [
       params(100_000, 36, 0.05, 'S'),
-      params(10_000, 6, 0.000001, 'S'),
+      params(10_000, 12, 0.0003, 'S'),
       params(500_000, 24, 0.03, 'S'),
       params(1_000_000, 12, 0.12, 'S'),
     ];
@@ -65,6 +82,14 @@ describe('interest calculation', () => {
         compound.pretaxInterest >= simple.pretaxInterest,
         `${simpleInput.monthlyDeposit}/${simpleInput.months}/${simpleInput.annualRate} expected M >= S`,
       );
+      if (
+        simpleInput.monthlyDeposit === 10_000 &&
+        simpleInput.months === 12 &&
+        simpleInput.annualRate === 0.0003
+      ) {
+        assert.equal(simple.pretaxInterest, 19);
+        assert.equal(compound.pretaxInterest, 20);
+      }
       assertDerivedValues(simpleInput, simple);
       assertDerivedValues(compoundInput, compound);
     }
@@ -107,7 +132,6 @@ describe('interest calculation', () => {
             const result = calculateInterest(input);
 
             assert.equal(Number.isInteger(result.pretaxInterest), true);
-            assert.equal(Math.round(result.pretaxInterest), result.pretaxInterest);
             assertDerivedValues(input, result);
           }
         }
