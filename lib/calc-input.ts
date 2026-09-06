@@ -76,6 +76,18 @@ export function toggleCondition(
   return CHECKABLE_CONDITION_CODES.filter((conditionCode) => next.includes(conditionCode));
 }
 
+export function applyConditions(
+  current: CheckableConditionCode[],
+  incoming: readonly ConditionCode[],
+): CheckableConditionCode[] {
+  const next = new Set<ConditionCode>(current);
+  for (const code of incoming) {
+    next.add(code);
+  }
+
+  return CHECKABLE_CONDITION_CODES.filter((conditionCode) => next.has(conditionCode));
+}
+
 export function clampMonthlyAmount(value: number): number {
   return Math.min(MONTHLY_AMOUNT_MAX, Math.max(MONTHLY_AMOUNT_MIN, value));
 }

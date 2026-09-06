@@ -40,6 +40,7 @@ export function Calculator() {
         input={input}
         onAmountStep={calcInput.stepAmount}
         onAmountTextChange={calcInput.setAmountText}
+        onConditionsApply={calcInput.applyConditions}
         onConditionToggle={calcInput.toggleCondition}
         onReserveTypeChange={calcInput.setReserveType}
         onTermMonthsChange={calcInput.setTermMonths}
