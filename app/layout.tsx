@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 import { SiteDisclaimer } from '@/app/_components/site-disclaimer';
 import './globals.css';
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className="flex min-h-[100dvh] flex-col">
         {children}
         <SiteDisclaimer />
+        <Analytics />
       </body>
     </html>
   );
