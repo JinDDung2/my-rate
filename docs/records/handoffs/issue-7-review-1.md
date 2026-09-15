@@ -4,7 +4,7 @@
 
 그 외 Acceptance Criteria 항목은 모두 충족한다:
 - `lib/action-list.ts`는 react/next import 없는 순수 모듈, baseline을 내부에서 `calculateMyRate(product, option, input.selectedConditions)`로 재계산, 이자 규약(`myRateBp / 10000`, `option.intrRateType`)이 `lib/ranking.ts`와 동일 → baseline 세후이자 일치.
-- 후보는 `baselineMyRate.unapplied`에서만 도출, `Map`으로 코드 단위 dedup + `rateBp` 합산, 시뮬레이션 조건 집합은 정확히 `selectedConditions + 코드 1개`(조합 없음, `calculateMyRate`가 `Set` 사용이라 중복 무해).
+- 후보는 `baselineMyRate.notMet`에서만 도출, `Map`으로 코드 단위 dedup + `rateBp` 합산, 시뮬레이션 조건 집합은 정확히 `selectedConditions + 코드 1개`(조합 없음, `calculateMyRate`가 `Set` 사용이라 중복 무해).
 - 정렬: delta 내림차순 → `CONDITION_CODES` 순서 tie-break(안정 정렬 + 삽입순서가 이미 조건순), 필터 `> 0`, `MAX_ACTIONS = 3` slice → 결정적.
 - 클램프(전체/부분) 처리 정확, 정수 유지(추가 반올림 없음).
 - `ActionListItem`에 `{ code, label, rateBp, afterTaxInterestDelta }` 모두 포함, `label`은 `CONDITION_META[code].label`.
@@ -23,7 +23,7 @@
 ## Test Gaps
 
 - `lib/action-list.test.ts`의 dedup 케이스가 `actions[0].label`이 `CONDITION_META['AUTO_TRANSFER'].label`(`'자동이체'`)로 해석되는지 단언하지 않는다. `code`/`rateBp`/`delta`만 검증 → 라벨 매핑 회귀는 카드 테스트에 간접 의존.
-- `OTHER` 및 `rateBp === 0` 조건이 후보에서 제외되는지 `action-list.test.ts`에서 직접 고정하지 않음(`calculateMyRate.unapplied` 커버리지에 의존). 허용 가능하나 로컬 핀 없음.
+- `OTHER` 및 `rateBp === 0` 조건이 후보에서 제외되는지 `action-list.test.ts`에서 직접 고정하지 않음(`calculateMyRate.notMet` 커버리지에 의존). 허용 가능하나 로컬 핀 없음.
 - `ActionListCard`가 `TopProductCard` 다음에 온다는 배치는 수동 확인만 존재(핸드오프상 수동 항목이라 허용).
 
 ## Summary

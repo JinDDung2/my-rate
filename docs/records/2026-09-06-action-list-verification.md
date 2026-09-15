@@ -10,7 +10,7 @@ Issue #7 adds the `[D] 액션 리스트` card below the top-product detail card.
 - Baseline and scenario interest both use the ranking convention:
   - `annualRate = myRateResult.myRateBp / 10000`
   - `interestType = option.intrRateType`
-- Candidate conditions come only from `baselineMyRate.unapplied`.
+- Candidate conditions come only from `baselineMyRate.notMet`.
 - Duplicate unmet condition rows are deduplicated by condition code.
 - `rateBp` on the returned item is the sum of baseline unmet rows for that code.
 - Each simulation uses exactly `input.selectedConditions` plus one candidate code.
@@ -54,7 +54,7 @@ Top ranking row:
   "maxRate": 3.7,
   "myRateBp": 360,
   "afterTaxInterest": 98982,
-  "unapplied": [
+  "notMet": [
     {
       "code": "AUTO_TRANSFER",
       "label": "당행 계좌 자동이체 6회 이상 입금",

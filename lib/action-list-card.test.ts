@@ -127,9 +127,9 @@ describe('ActionListCard', () => {
     assert.equal(render(rankingRows, [], calcInput), '');
     assert.equal(
       render(
-        buildRanking([product], input({ selectedConditions: ['SALARY_TRANSFER'] })),
+        buildRanking([product], input({ salaryTransferBank: 'fixture bank' })),
         [product],
-        input({ selectedConditions: ['SALARY_TRANSFER'] }),
+        input({ salaryTransferBank: 'fixture bank' }),
       ),
       '',
     );

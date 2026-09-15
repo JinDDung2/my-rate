@@ -10,7 +10,11 @@ import {
   parseMonthlyAmount,
   toggleCondition as toggleConditionValue,
   type CalcInput,
-  type CheckableConditionCode,
+  type GlobalConditionCode,
+  type BankScopedConditionCode,
+  setSalaryTransferBank as setSalaryBankValue,
+  setCardUsageBank as setCardBankValue,
+  setProductConditionOverride as setOverrideValue,
   type ReserveType,
   type TermMonths,
 } from '@/lib/calc-input';
@@ -70,11 +74,21 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     setInput((current) => ({ ...current, reserveType }));
   }, []);
 
-  const toggleCondition = useCallback((code: CheckableConditionCode) => {
+  const toggleCondition = useCallback((code: GlobalConditionCode) => {
     setInput((current) => ({
       ...current,
       selectedConditions: toggleConditionValue(current.selectedConditions, code),
     }));
+  }, []);
+
+  const setSalaryTransferBank = useCallback((bank: string | null) => {
+    setInput((current) => setSalaryBankValue(current, bank));
+  }, []);
+  const setCardUsageBank = useCallback((bank: string | null) => {
+    setInput((current) => setCardBankValue(current, bank));
+  }, []);
+  const setProductConditionOverride = useCallback((finPrdtCd: string, code: BankScopedConditionCode) => {
+    setInput((current) => setOverrideValue(current, finPrdtCd, code));
   }, []);
 
   const hydrate = useCallback((next: CalcInput) => {
@@ -93,5 +107,8 @@ export function useCalcInput(defaultInput: CalcInput = DEFAULT_CALC_INPUT) {
     setReserveType,
     toggleCondition,
     hydrate,
+    setSalaryTransferBank,
+    setCardUsageBank,
+    setProductConditionOverride,
   };
 }

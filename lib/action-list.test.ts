@@ -1,3 +1,4 @@
+import { createConditionStatusResolver } from './bank-condition';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { CalcInput } from './calc-input';
@@ -61,7 +62,7 @@ function optionFixture(overrides: Partial<RateOption> = {}): RateOption {
 }
 
 function afterTaxInterest(product: Product, option: RateOption, calcInput: CalcInput): number {
-  const myRateResult = calculateMyRate(product, option, calcInput.selectedConditions);
+  const myRateResult = calculateMyRate(product, option, createConditionStatusResolver(product, calcInput));
 
   return calculateInterest({
     monthlyDeposit: calcInput.monthlyAmount,
@@ -109,7 +110,7 @@ describe('buildActionList', () => {
     const actions = buildActionList(
       product,
       option,
-      input({ selectedConditions: ['SALARY_TRANSFER'] }),
+      input({ salaryTransferBank: 'fixture bank' }),
     );
 
     assert.deepEqual(actions, []);
@@ -158,17 +159,17 @@ describe('buildActionList', () => {
       ],
       options: [option],
     });
-    const calcInput = input({ selectedConditions: ['SALARY_TRANSFER'] });
+    const calcInput = input({ salaryTransferBank: 'fixture bank' });
 
     const actions = buildActionList(product, option, calcInput);
     const baseline = afterTaxInterest(product, option, calcInput);
     const cardOnlyAdded = afterTaxInterest(product, option, {
       ...calcInput,
-      selectedConditions: ['SALARY_TRANSFER', 'CARD_USAGE'],
+      salaryTransferBank: 'fixture bank', cardUsageBank: 'fixture bank',
     });
     const combinationAdded = afterTaxInterest(product, option, {
       ...calcInput,
-      selectedConditions: ['SALARY_TRANSFER', 'CARD_USAGE', 'AUTO_TRANSFER'],
+      salaryTransferBank: 'fixture bank', cardUsageBank: 'fixture bank', selectedConditions: ['AUTO_TRANSFER'],
     });
 
     assert.equal(actions[0].code, 'CARD_USAGE');
@@ -202,13 +203,13 @@ describe('buildActionList', () => {
       ],
       options: [option],
     });
-    const calcInput = input({ selectedConditions: ['SALARY_TRANSFER'] });
+    const calcInput = input({ salaryTransferBank: 'fixture bank' });
     const [row] = buildRanking([product], calcInput);
 
     const [action] = buildActionList(product, option, calcInput);
     const afterAddingCard = afterTaxInterest(product, option, {
       ...calcInput,
-      selectedConditions: ['SALARY_TRANSFER', 'CARD_USAGE'],
+      salaryTransferBank: 'fixture bank', cardUsageBank: 'fixture bank',
     });
 
     assert.equal(action.afterTaxInterestDelta, afterAddingCard - row.interest.afterTaxInterest);

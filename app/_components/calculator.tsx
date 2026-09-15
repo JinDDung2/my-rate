@@ -6,6 +6,7 @@ import { ConditionPanel } from '@/app/_components/condition-panel';
 import { ProductList } from '@/app/_components/product-list';
 import { RankingTable } from '@/app/_components/ranking-table';
 import { TopProductCard } from '@/app/_components/top-product-card';
+import { getBankNames } from '@/lib/bank-condition';
 import { RESERVE_TYPE_LABELS } from '@/lib/calc-input';
 import { CONDITION_META } from '@/lib/conditions';
 import { useCalcInput } from '@/lib/use-calc-input';
@@ -34,10 +35,7 @@ export function Calculator() {
 
     return buildRanking(products.data.products, input);
   }, [
-    input.monthlyAmount,
-    input.reserveType,
-    input.selectedConditions,
-    input.termMonths,
+    input,
     products.data,
     products.status,
   ]);
@@ -48,6 +46,9 @@ export function Calculator() {
         amountError={calcInput.amountError}
         amountText={calcInput.amountText}
         input={input}
+        bankNames={products.status === 'success' ? getBankNames(products.data.products) : []}
+        onSalaryTransferBankChange={calcInput.setSalaryTransferBank}
+        onCardUsageBankChange={calcInput.setCardUsageBank}
         onAmountStep={calcInput.stepAmount}
         onAmountTextChange={calcInput.setAmountText}
         onConditionToggle={calcInput.toggleCondition}
@@ -75,7 +76,12 @@ export function Calculator() {
 
       {rankingRows ? <RankingTable rows={rankingRows} /> : null}
 
-      {rankingRows && rankingRows.length > 0 ? <TopProductCard rankingRows={rankingRows} /> : null}
+      {rankingRows && rankingRows.length > 0 ? (
+        <TopProductCard
+          rankingRows={rankingRows}
+          onConditionConfirm={calcInput.setProductConditionOverride}
+        />
+      ) : null}
 
       {rankingRows && rankingRows.length > 0 && products.status === 'success' ? (
         <ActionListCard rankingRows={rankingRows} products={products.data.products} input={input} />

@@ -13,7 +13,7 @@ Issue #6 adds the `[C] 1위 상품 상세 카드` below the ranking table.
 - `buildTopProductSummary` compares `rankingRows[0]` and the advertised leader by `finPrdtCd`.
 - Added `formatRateBpPercentPoint(rateBp)` in `lib/format.ts`.
 - Added `app/_components/top-product-card.tsx` and rendered it below `<RankingTable>` when `rankingRows.length > 0`.
-- The card displays the after-tax leader's advertised max rate, my rate, principal, after-tax interest, applied conditions, and unapplied conditions.
+- The card displays the after-tax leader's advertised max rate, my rate, principal, after-tax interest, applied conditions, and notMet conditions.
 - `excluded` conditions are not rendered as preferential-rate conditions.
 
 ## Decisions

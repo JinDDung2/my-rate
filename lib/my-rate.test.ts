@@ -57,7 +57,7 @@ function optionFixture(overrides: Partial<RateOption> = {}): RateOption {
 }
 
 function assertConditionPartition(product: Product, result: MyRateResult) {
-  const buckets = [result.applied, result.unapplied, result.excluded];
+  const buckets = [result.applied, result.notMet, result.unconfirmed, result.excluded];
   const flattened = buckets.flat();
 
   assert.equal(flattened.length, product.conditions.length);
@@ -78,7 +78,7 @@ describe('my-rate calculation', () => {
   it('T6 keeps base rate when no conditions are selected for every real option', () => {
     for (const product of products) {
       for (const option of product.options) {
-        const result = calculateMyRate(product, option, []);
+        const result = calculateMyRate(product, option, selectedStatus([]));
 
         assert.equal(result.myRate, option.baseRate);
         assert.equal(result.myRateBp, toBp(option.baseRate));
@@ -96,7 +96,7 @@ describe('my-rate calculation', () => {
     const option = findRateOption(product, 12, 'S');
     assert.ok(option);
 
-    const result = calculateMyRate(product, option, allCheckableConditions);
+    const result = calculateMyRate(product, option, selectedStatus(allCheckableConditions));
 
     assert.equal(result.clamped, true);
     assert.equal(result.myRate, 3.15);
@@ -107,7 +107,7 @@ describe('my-rate calculation', () => {
     for (const termMonths of [6, 12, 24, 36] as const) {
       const termOption = findRateOption(product, termMonths, 'S');
       assert.ok(termOption);
-      const termResult = calculateMyRate(product, termOption, allCheckableConditions);
+      const termResult = calculateMyRate(product, termOption, selectedStatus(allCheckableConditions));
       assert.equal(termResult.myRate, termOption.maxRate);
     }
   });
@@ -121,7 +121,7 @@ describe('my-rate calculation', () => {
       ],
     });
     const option = optionFixture({ baseRate: 2.45, maxRate: 3.1 });
-    const result = calculateMyRate(product, option, ['CARD_USAGE', 'SALARY_TRANSFER']);
+    const result = calculateMyRate(product, option, selectedStatus(['CARD_USAGE', 'SALARY_TRANSFER']));
 
     assert.equal(result.myRate, 3.1);
     assert.equal(result.myRateBp, 310);
@@ -137,7 +137,7 @@ describe('my-rate calculation', () => {
     const result = calculateMyRate(
       product,
       optionFixture({ baseRate: 3.0, maxRate: 2.9 }),
-      ['SALARY_TRANSFER'],
+      selectedStatus(['SALARY_TRANSFER']),
     );
 
     assert.equal(result.myRate, 3.0);
@@ -156,11 +156,11 @@ describe('my-rate calculation', () => {
     const option = findRateOption(product, 12, 'S');
     assert.ok(option);
 
-    const result = calculateMyRate(product, option, allCheckableConditions);
+    const result = calculateMyRate(product, option, selectedStatus(allCheckableConditions));
     assert.equal(result.appliedBp, 70);
     assert.equal(result.excluded.filter((item) => item.code === 'OTHER').length, 2);
 
-    const unsupportedOnly = calculateMyRate(product, option, ['MARKETING_AGREE', 'APP_MISSION']);
+    const unsupportedOnly = calculateMyRate(product, option, selectedStatus(['MARKETING_AGREE', 'APP_MISSION']));
     assert.equal(unsupportedOnly.myRate, option.baseRate);
     assert.equal(unsupportedOnly.appliedBp, 0);
   });
@@ -175,7 +175,7 @@ describe('my-rate calculation', () => {
     const option = findRateOption(product, 12, 'S');
     assert.ok(option);
 
-    const result = calculateMyRate(product, option, ['AUTO_TRANSFER']);
+    const result = calculateMyRate(product, option, selectedStatus(['AUTO_TRANSFER']));
 
     assert.equal(result.applied.length, 2);
     assert.equal(result.appliedBp, 20);
@@ -185,10 +185,10 @@ describe('my-rate calculation', () => {
   it('puts zero-rate conditions in excluded even when checked', () => {
     const zeroRate = condition('CARD_USAGE', 0, 'zero card');
     const product = productFixture({ conditions: [zeroRate, condition('SALARY_TRANSFER', 10)] });
-    const result = calculateMyRate(product, optionFixture(), ['CARD_USAGE', 'SALARY_TRANSFER']);
+    const result = calculateMyRate(product, optionFixture(), selectedStatus(['CARD_USAGE', 'SALARY_TRANSFER']));
 
     assert.deepEqual(result.applied, [product.conditions[1]]);
-    assert.deepEqual(result.unapplied, []);
+    assert.deepEqual(result.notMet, []);
     assert.deepEqual(result.excluded, [zeroRate]);
   });
 
@@ -202,20 +202,20 @@ describe('my-rate calculation', () => {
       condition('LINKED_PRODUCT', 10),
     ];
     const product = productFixture({ conditions });
-    const first = calculateMyRate(product, optionFixture(), ['LINKED_PRODUCT', 'AUTO_TRANSFER']);
-    const second = calculateMyRate(product, optionFixture(), ['AUTO_TRANSFER', 'LINKED_PRODUCT']);
+    const first = calculateMyRate(product, optionFixture(), selectedStatus(['LINKED_PRODUCT', 'AUTO_TRANSFER']));
+    const second = calculateMyRate(product, optionFixture(), selectedStatus(['AUTO_TRANSFER', 'LINKED_PRODUCT']));
 
     assertConditionPartition(product, first);
     assert.deepEqual(first, second);
     assert.deepEqual(first.applied, [conditions[1], conditions[3], conditions[5]]);
-    assert.deepEqual(first.unapplied, [conditions[2]]);
+    assert.deepEqual(first.notMet, [conditions[2]]);
     assert.deepEqual(first.excluded, [conditions[4], conditions[0]]);
   });
 
   it('preserves condition objects for later detail screens', () => {
     const richCondition = condition('SALARY_TRANSFER', 15, 'salary');
     const product = productFixture({ conditions: [richCondition] });
-    const result = calculateMyRate(product, optionFixture(), ['SALARY_TRANSFER']);
+    const result = calculateMyRate(product, optionFixture(), selectedStatus(['SALARY_TRANSFER']));
 
     assert.equal(result.applied[0], richCondition);
     assert.equal(result.applied[0].label, 'salary');
@@ -230,7 +230,7 @@ describe('my-rate calculation', () => {
 
     for (const product of productsWithUnexplainedRate) {
       for (const option of product.options) {
-        const result = calculateMyRate(product, option, allCheckableConditions);
+        const result = calculateMyRate(product, option, selectedStatus(allCheckableConditions));
         assert.ok(
           result.myRate < option.maxRate,
           `${product.finPrdtCd} ${option.saveTrm}/${option.rsrvType} should stay below maxRate`,
@@ -247,7 +247,7 @@ describe('my-rate calculation', () => {
     const result = calculateMyRate(
       product,
       optionFixture({ baseRate: 2.3, maxRate: 3.2 }),
-      ['SALARY_TRANSFER'],
+      selectedStatus(['SALARY_TRANSFER']),
     );
 
     assert.equal(result.appliedBp, 20);
@@ -265,7 +265,7 @@ describe('my-rate calculation', () => {
         const result = calculateMyRate(
           productFixture({ conditions: [condition('SALARY_TRANSFER', rateBp)] }),
           optionFixture({ baseRate, maxRate: baseRate + 2 }),
-          ['SALARY_TRANSFER'],
+          selectedStatus(['SALARY_TRANSFER']),
         );
 
         assert.equal(result.myRateBp, toBp(baseRate) + rateBp);
@@ -277,7 +277,7 @@ describe('my-rate calculation', () => {
     const exactResult = calculateMyRate(
       productFixture({ conditions: [condition('SALARY_TRANSFER', 10)] }),
       optionFixture({ baseRate: 3.2, maxRate: 4 }),
-      ['SALARY_TRANSFER'],
+      selectedStatus(['SALARY_TRANSFER']),
     );
     assert.equal(exactResult.myRate, 3.3);
     assert.notEqual(exactResult.myRate, 3.3000000000000003);
@@ -310,7 +310,7 @@ describe('my-rate calculation', () => {
     for (const product of products) {
       for (const option of product.options) {
         for (const selected of selectedSets) {
-          const result = calculateMyRate(product, option, selected);
+          const result = calculateMyRate(product, option, selectedStatus(selected));
 
           assert.ok(result.myRate >= option.baseRate);
           assert.ok(result.myRate <= option.maxRate);
@@ -329,7 +329,7 @@ describe('my-rate calculation', () => {
           );
           assert.equal(result.excluded.every((item) => !isCountable(item)), true);
           assert.equal(result.applied.every(isCountable), true);
-          assert.equal(result.unapplied.every(isCountable), true);
+          assert.equal(result.notMet.every(isCountable), true);
         }
       }
     }
@@ -354,3 +354,26 @@ function formatRateFromBp(rateBp: number, fixedTwoDecimals = false): string {
 
   return `${integerPart}.${String(fractionalPart).padStart(2, '0')}`;
 }
+
+function selectedStatus(selected: readonly CheckableConditionCode[]) {
+  return (code: CheckableConditionCode): 'applied' | 'notMet' =>
+    selected.includes(code) ? 'applied' : 'notMet';
+}
+
+it('partitions all four buckets without adding unresolved rates', () => {
+  const product = productFixture({ conditions: [
+    condition('SALARY_TRANSFER', 40),
+    condition('CARD_USAGE', 20),
+    condition('AUTO_TRANSFER', 10),
+    condition('FIRST_CUSTOMER', 30),
+    condition('OTHER', 50),
+    condition('APP_MISSION', 0),
+  ] });
+  const result = calculateMyRate(product, optionFixture(), (code) =>
+    code === 'AUTO_TRANSFER' ? 'applied' : code === 'CARD_USAGE' ? 'notMet' : 'unconfirmed');
+  assertConditionPartition(product, result);
+  assert.equal(result.appliedBp, 10);
+  assert.equal(result.myRateBp, 330);
+  assert.deepEqual(result.notMet.map((c) => c.code), ['CARD_USAGE']);
+  assert.deepEqual(result.unconfirmed.map((c) => c.code), ['SALARY_TRANSFER', 'FIRST_CUSTOMER']);
+});

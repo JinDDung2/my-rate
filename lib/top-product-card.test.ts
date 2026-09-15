@@ -47,7 +47,8 @@ function row(overrides: Partial<RankingRow> = {}): RankingRow {
       clamped: false,
       clampedAwayBp: 0,
       applied: [condition('NON_FACE_TO_FACE', '비대면 가입', 50)],
-      unapplied: [condition('SALARY_TRANSFER', '급여 이체', 25)],
+      notMet: [],
+      unconfirmed: [condition('SALARY_TRANSFER', '급여 이체', 25)],
       excluded: [condition('OTHER', '기타 조건', 0)],
     },
     interest: {
@@ -62,7 +63,7 @@ function row(overrides: Partial<RankingRow> = {}): RankingRow {
 }
 
 function render(rows: RankingRow[]): string {
-  return renderToStaticMarkup(createElement(TopProductCard, { rankingRows: rows }));
+  return renderToStaticMarkup(createElement(TopProductCard, { rankingRows: rows, onConditionConfirm: () => {} }));
 }
 
 describe('TopProductCard', () => {
@@ -96,6 +97,12 @@ describe('TopProductCard', () => {
     assert.match(markup, /0\.5%p/);
     assert.match(markup, /비대면 가입 evidence/);
     assert.match(markup, /미충족 X/);
+    assert.match(markup, /미확인 \?/);
+    assert.match(markup, /type="checkbox"/);
+    assert.match(markup, /급여 이체 확인\/의향 있음/);
+    assert.match(markup, /text-amber-900/);
+    assert.match(markup, /text-emerald-700/);
+    assert.match(markup, /text-slate-500/);
     assert.match(markup, /급여 이체/);
     assert.match(markup, /0\.25%p/);
     assert.match(markup, /급여 이체 evidence/);
@@ -114,14 +121,15 @@ describe('TopProductCard', () => {
         myRateResult: {
           ...row().myRateResult,
           applied: [],
-          unapplied: [],
+          notMet: [],
+          unconfirmed: [],
           excluded: [condition('OTHER', '기타 조건', 0)],
         },
       }),
     ]);
 
     assert.doesNotMatch(markup, /광고 1위와 다릅니다/);
-    assert.equal(markup.match(/없음/g)?.length, 2);
+    assert.equal(markup.match(/없음/g)?.length, 3);
     assert.doesNotMatch(markup, /AI 해석/);
     assert.doesNotMatch(markup, /기타 조건/);
   });

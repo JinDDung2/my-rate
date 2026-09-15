@@ -1,12 +1,12 @@
 'use client';
 
 import { ShareButton } from '@/app/_components/share-button';
-import { CHECKABLE_CONDITION_CODES, CONDITION_META } from '@/lib/conditions';
+import { GLOBAL_CONDITION_CODES, CONDITION_META } from '@/lib/conditions';
 import {
   RESERVE_TYPE_LABELS,
   TERM_OPTIONS,
   type CalcInput,
-  type CheckableConditionCode,
+  type GlobalConditionCode,
   type ReserveType,
   type TermMonths,
 } from '@/lib/calc-input';
@@ -14,19 +14,25 @@ import { formatKrw } from '@/lib/format';
 
 interface ConditionPanelProps {
   input: CalcInput;
+  bankNames: string[];
+  onSalaryTransferBankChange: (bank: string | null) => void;
+  onCardUsageBankChange: (bank: string | null) => void;
   amountText: string;
   amountError: string | null;
   onAmountTextChange: (value: string) => void;
   onAmountStep: (direction: -1 | 1) => void;
   onTermMonthsChange: (value: TermMonths) => void;
   onReserveTypeChange: (value: ReserveType) => void;
-  onConditionToggle: (value: CheckableConditionCode) => void;
+  onConditionToggle: (value: GlobalConditionCode) => void;
 }
 
 const RESERVE_TYPE_OPTIONS: ReserveType[] = ['S', 'F'];
 
 export function ConditionPanel({
   input,
+  bankNames,
+  onSalaryTransferBankChange,
+  onCardUsageBankChange,
   amountText,
   amountError,
   onAmountTextChange,
@@ -152,7 +158,7 @@ export function ConditionPanel({
         <fieldset>
           <legend className="text-sm font-semibold text-slate-900">내가 충족할 수 있는 조건</legend>
           <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {CHECKABLE_CONDITION_CODES.map((code) => (
+            {GLOBAL_CONDITION_CODES.map((code) => (
               <label
                 className="flex min-h-12 items-center gap-3 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 has-[:checked]:border-slate-950 has-[:checked]:bg-slate-950 has-[:checked]:text-white"
                 htmlFor={`cond-${code}`}
@@ -176,6 +182,20 @@ export function ConditionPanel({
             </span>
           </div>
         </fieldset>
+
+        {([
+          ['salary-transfer-bank', '급여이체 받는 은행', input.salaryTransferBank, onSalaryTransferBankChange],
+          ['card-usage-bank', '카드실적 채우는 은행', input.cardUsageBank, onCardUsageBankChange],
+        ] as const).map(([id, label, value, onChange]) => (
+          <div key={id}>
+            <label htmlFor={id} className="text-sm font-semibold text-slate-900">{label}</label>
+            <select id={id} value={value ?? ''} onChange={(event) => onChange(event.target.value || null)}
+              className="mt-2 h-12 w-full rounded-md border border-slate-300 bg-white px-3 text-slate-950">
+              <option value="">선택 안 함</option>
+              {bankNames.map((bank) => <option key={bank} value={bank}>{bank}</option>)}
+            </select>
+          </div>
+        ))}
 
         <ShareButton input={input} />
       </div>

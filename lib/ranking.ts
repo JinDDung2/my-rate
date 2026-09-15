@@ -1,3 +1,4 @@
+import { createConditionStatusResolver } from '@/lib/bank-condition';
 import type { CalcInput } from '@/lib/calc-input';
 import { calculateInterest, type InterestResult } from '@/lib/interest';
 import { calculateMyRate, findRateOption, type MyRateResult } from '@/lib/my-rate';
@@ -37,7 +38,7 @@ export function buildRanking(products: readonly Product[], input: CalcInput): Ra
     const option = findRateOption(product, input.termMonths, input.reserveType);
     if (!option) return [];
 
-    const myRateResult = calculateMyRate(product, option, input.selectedConditions);
+    const myRateResult = calculateMyRate(product, option, createConditionStatusResolver(product, input));
     const interest = calculateInterest({
       monthlyDeposit: input.monthlyAmount,
       months: input.termMonths,

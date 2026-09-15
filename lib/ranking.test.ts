@@ -1,16 +1,17 @@
+import { createConditionStatusResolver } from './bank-condition';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import productsData from '../data/products.json';
-import type { CalcInput, CheckableConditionCode } from './calc-input';
+import type { CalcInput, GlobalConditionCode } from './calc-input';
 import { DEFAULT_CALC_INPUT } from './calc-input';
-import { CHECKABLE_CONDITION_CODES } from './conditions';
+import { GLOBAL_CONDITION_CODES } from './conditions';
 import { calculateInterest } from './interest';
 import { calculateMyRate, findRateOption } from './my-rate';
 import { buildRanking, buildTopProductSummary, findAdvertisedLeader } from './ranking';
 import type { Product, RateOption, SpecialCondition } from './types';
 
 const products = productsData.products as Product[];
-const allCheckableConditions = [...CHECKABLE_CONDITION_CODES];
+const allGlobalConditions = [...GLOBAL_CONDITION_CODES];
 
 function input(overrides: Partial<CalcInput> = {}): CalcInput {
   return {
@@ -137,7 +138,7 @@ describe('ranking calculation', () => {
         monthlyAmount: 500_000,
         termMonths: 12,
         reserveType: 'S',
-        selectedConditions: allCheckableConditions,
+        selectedConditions: allGlobalConditions,
       }),
     );
 
@@ -159,7 +160,7 @@ describe('ranking calculation', () => {
 
     const rows = buildRanking(
       [lowBase, highBase],
-      input({ selectedConditions: ['SALARY_TRANSFER'] }),
+      input({ salaryTransferBank: 'fixture bank' }),
     );
 
     assert.equal(rows[0].finPrdtCd, 'A_HIGH_BASE');
@@ -197,7 +198,7 @@ describe('ranking calculation', () => {
     const withoutCondition = buildRanking([conditional, baseLeader], input());
     const withCondition = buildRanking(
       [conditional, baseLeader],
-      input({ selectedConditions: ['SALARY_TRANSFER'] }),
+      input({ salaryTransferBank: 'fixture bank' }),
     );
 
     assert.equal(withoutCondition[0].finPrdtCd, 'B_BASE_LEADER');
@@ -213,13 +214,13 @@ describe('ranking calculation', () => {
     });
     const rankingInput = input({
       monthlyAmount: 320_000,
-      selectedConditions: ['CARD_USAGE'],
+      cardUsageBank: 'fixture bank',
     });
 
     const [row] = buildRanking([compound], rankingInput);
     const option = findRateOption(compound, rankingInput.termMonths, rankingInput.reserveType);
     assert.ok(option);
-    const myRateResult = calculateMyRate(compound, option, rankingInput.selectedConditions);
+    const myRateResult = calculateMyRate(compound, option, createConditionStatusResolver(compound, rankingInput));
     const expected = calculateInterest({
       monthlyDeposit: rankingInput.monthlyAmount,
       months: rankingInput.termMonths,
@@ -233,7 +234,7 @@ describe('ranking calculation', () => {
   });
 
   it('keeps real row values aligned with the lower-level calculators', () => {
-    const selected: CheckableConditionCode[] = ['NON_FACE_TO_FACE', 'MARKETING_AGREE'];
+    const selected: GlobalConditionCode[] = ['NON_FACE_TO_FACE', 'MARKETING_AGREE'];
     const rankingInput = input({
       monthlyAmount: 500_000,
       termMonths: 24,
@@ -249,7 +250,7 @@ describe('ranking calculation', () => {
       assert.ok(product);
       const option = findRateOption(product, rankingInput.termMonths, rankingInput.reserveType);
       assert.ok(option);
-      const myRateResult = calculateMyRate(product, option, selected);
+      const myRateResult = calculateMyRate(product, option, createConditionStatusResolver(product, rankingInput));
       const interest = calculateInterest({
         monthlyDeposit: rankingInput.monthlyAmount,
         months: rankingInput.termMonths,
@@ -274,7 +275,7 @@ describe('ranking calculation', () => {
       options: [optionFixture({ baseRate: 2.4, maxRate: 5.2 })],
     });
 
-    const [row] = buildRanking([product], input({ selectedConditions: ['SALARY_TRANSFER'] }));
+    const [row] = buildRanking([product], input({ salaryTransferBank: 'fixture bank' }));
 
     assert.equal(row.unexplainedBp, 250);
     assert.equal(row.myRateResult.appliedBp, 30);
@@ -362,14 +363,14 @@ describe('top product summary', () => {
     assert.equal(summary.differsFromAdvertised, true);
   });
 
-  it('keeps the real-data demo difference when salary transfer is selected', () => {
+  it('keeps the real-data demo difference when KB salary transfer is selected', () => {
     const rows = buildRanking(
       products,
       input({
         monthlyAmount: 500_000,
         termMonths: 12,
         reserveType: 'S',
-        selectedConditions: ['SALARY_TRANSFER'],
+        salaryTransferBank: '국민은행',
       }),
     );
     const summary = buildTopProductSummary(rows);

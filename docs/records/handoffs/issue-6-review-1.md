@@ -10,7 +10,7 @@ CLAUDE.md와 관련 파일(`lib/ranking.ts`, `lib/format.ts`, `lib/ranking.test.
 - 광고 1위 정렬: `option.maxRate` desc → `option.baseRate` desc → `finPrdtCd` 코드포인트 asc. `buildRanking`의 `compareCodePointAscending` 재사용. `[...rows].sort()`로 입력 비변경. `finPrdtCd`가 행마다 유일(상품당 옵션 1개)하므로 전순서 → 배열 순서 무관 결정적. ✅
 - 비교 키: `myLeader.finPrdtCd !== advertisedLeader.finPrdtCd`. ✅
 - 카드 데이터: `maxRate.toFixed(2)%`, `myRate.toFixed(2)%`, `formatKrw(interest.principal)+원`, `formatKrw(interest.afterTaxInterest)+원` — 전부 `rankingRows[0]`에서 직접 표시, 재계산 없음. ✅
-- 충족/미충족: `myRateResult.applied` / `unapplied`만 렌더. 이 두 리스트는 `calculateMyRate`에서 `isCountable` 통과분만 담기므로 `excluded`(OTHER·rateBp 0)는 구조적으로 배제됨. "충족 O" / "미충족 X" 헤딩으로 분리. 비면 "없음". ✅
+- 충족/미충족: `myRateResult.applied` / `notMet`만 렌더. 이 두 리스트는 `calculateMyRate`에서 `isCountable` 통과분만 담기므로 `excluded`(OTHER·rateBp 0)는 구조적으로 배제됨. "충족 O" / "미충족 X" 헤딩으로 분리. 비면 "없음". ✅
 - `%p` 포맷: `Number((rateBp/100).toFixed(2))` → 정수 basis point 기준 `50→0.5%p`, `25→0.25%p`, `100→1%p`, `10→0.1%p` 모두 정확(부동소수 오차 없음). ✅
 - 배지: `differsFromAdvertised`일 때만 렌더, "광고 1위와 다릅니다" 텍스트 포함, amber 색상 + 텍스트 동시 전달. ✅
 - 렌더 조건: `calculator.tsx`에서 `rankingRows && rankingRows.length > 0` 가드 + `buildTopProductSummary`가 빈 배열에 `null`. null·빈 배열이면 카드/배지 모두 미렌더. (핸드오프 본문의 "RankingTable과 동일 조건" 서술은 자체 모순이나 — RankingTable은 빈 배열에도 안내문을 렌더함 — 구현은 명시적 AC "빈 배열이면 카드 미렌더"를 따름.) ✅

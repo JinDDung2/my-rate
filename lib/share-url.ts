@@ -3,13 +3,13 @@ import {
   snapMonthlyAmount,
   TERM_OPTIONS,
   type CalcInput,
-  type CheckableConditionCode,
+  type GlobalConditionCode,
   type ReserveType,
   type TermMonths,
 } from '@/lib/calc-input';
-import { CHECKABLE_CONDITION_CODES } from '@/lib/conditions';
+import { GLOBAL_CONDITION_CODES } from '@/lib/conditions';
 
-const QUERY_KEYS = ['m', 't', 'r', 'c'] as const;
+const QUERY_KEYS = ['m', 't', 'r', 'c', 'sb', 'cb'] as const;
 const RESERVE_TYPES: ReserveType[] = ['S', 'F'];
 
 function isTermMonths(value: number): value is TermMonths {
@@ -53,19 +53,19 @@ function parseReserveType(value: string | null): ReserveType {
   return value;
 }
 
-function normalizeConditions(value: string | null): CheckableConditionCode[] {
+function normalizeConditions(value: string | null): GlobalConditionCode[] {
   if (value === null || value.trim() === '') {
     return DEFAULT_CALC_INPUT.selectedConditions;
   }
 
   const selectedSet = new Set(value.split(',').map((code) => code.trim()).filter(Boolean));
 
-  return CHECKABLE_CONDITION_CODES.filter((code) => selectedSet.has(code));
+  return GLOBAL_CONDITION_CODES.filter((code) => selectedSet.has(code));
 }
 
 export function serializeCalcInput(input: CalcInput): string {
   const selectedSet = new Set(input.selectedConditions);
-  const selectedConditions = CHECKABLE_CONDITION_CODES.filter((code) => selectedSet.has(code));
+  const selectedConditions = GLOBAL_CONDITION_CODES.filter((code) => selectedSet.has(code));
 
   const query = [
     `m=${input.monthlyAmount}`,
@@ -77,6 +77,9 @@ export function serializeCalcInput(input: CalcInput): string {
     query.push(`c=${selectedConditions.join(',')}`);
   }
 
+  if (input.salaryTransferBank) query.push(`sb=${encodeURIComponent(input.salaryTransferBank)}`);
+  if (input.cardUsageBank) query.push(`cb=${encodeURIComponent(input.cardUsageBank)}`);
+
   return query.join('&');
 }
 
@@ -84,6 +87,10 @@ export function parseCalcInputFromQuery(search: string): CalcInput {
   const params = new URLSearchParams(search);
 
   return {
+    ...DEFAULT_CALC_INPUT,
+    salaryTransferBank: params.get('sb') || null,
+    cardUsageBank: params.get('cb') || null,
+    productConditionOverrides: {},
     monthlyAmount: parseMonthlyAmount(params.get('m')),
     termMonths: parseTermMonths(params.get('t')),
     reserveType: parseReserveType(params.get('r')),

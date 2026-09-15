@@ -1,3 +1,4 @@
+import { createConditionStatusResolver, type ConditionStatusResolver } from '@/lib/bank-condition';
 import type { CalcInput, CheckableConditionCode } from '@/lib/calc-input';
 import { CONDITION_META } from '@/lib/conditions';
 import { calculateInterest } from '@/lib/interest';
@@ -14,8 +15,13 @@ export interface ActionListItem {
   afterTaxInterestDelta: number;
 }
 
-function calculateAfterTaxInterest(product: Product, option: RateOption, input: CalcInput): number {
-  const myRateResult = calculateMyRate(product, option, input.selectedConditions);
+function calculateAfterTaxInterest(
+  product: Product,
+  option: RateOption,
+  input: CalcInput,
+  resolveStatus: ConditionStatusResolver,
+): number {
+  const myRateResult = calculateMyRate(product, option, resolveStatus);
 
   return calculateInterest({
     monthlyDeposit: input.monthlyAmount,
@@ -30,7 +36,8 @@ export function buildActionList(
   option: RateOption,
   input: CalcInput,
 ): ActionListItem[] {
-  const baselineMyRate = calculateMyRate(product, option, input.selectedConditions);
+  const resolveStatus = createConditionStatusResolver(product, input);
+  const baselineMyRate = calculateMyRate(product, option, resolveStatus);
   const baselineAfterTaxInterest = calculateInterest({
     monthlyDeposit: input.monthlyAmount,
     months: input.termMonths,
@@ -39,17 +46,17 @@ export function buildActionList(
   }).afterTaxInterest;
   const codeToRateBp = new Map<CheckableConditionCode, number>();
 
-  for (const condition of baselineMyRate.unapplied) {
+  for (const condition of [...baselineMyRate.notMet, ...baselineMyRate.unconfirmed]) {
     const code = condition.code as CheckableConditionCode;
     codeToRateBp.set(code, (codeToRateBp.get(code) ?? 0) + condition.rateBp);
   }
 
   return [...codeToRateBp.entries()]
     .map(([code, rateBp]) => {
-      const afterTaxInterest = calculateAfterTaxInterest(product, option, {
-        ...input,
-        selectedConditions: [...input.selectedConditions, code],
-      });
+      const afterTaxInterest = calculateAfterTaxInterest(
+        product, option, input,
+        (candidate) => candidate === code ? 'applied' : resolveStatus(candidate),
+      );
 
       return {
         code,
