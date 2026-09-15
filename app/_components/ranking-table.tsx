@@ -1,11 +1,15 @@
+import { Fragment } from 'react';
+import { ProductConditions } from '@/app/_components/product-conditions';
+import type { BankScopedConditionCode } from '@/lib/calc-input';
 import { formatKrw } from '@/lib/format';
 import type { RankingRow } from '@/lib/ranking';
 
 interface RankingTableProps {
   rows: RankingRow[];
+  onConditionConfirm: (finPrdtCd: string, code: BankScopedConditionCode) => void;
 }
 
-export function RankingTable({ rows }: RankingTableProps) {
+export function RankingTable({ rows, onConditionConfirm }: RankingTableProps) {
   return (
     <section
       aria-labelledby="ranking-table-heading"
@@ -60,18 +64,45 @@ export function RankingTable({ rows }: RankingTableProps) {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {rows.map((row) => (
-                <tr className="text-slate-800" key={`${row.finPrdtCd}-${row.option.saveTrm}-${row.option.rsrvType}`}>
-                  <td className="px-3 py-3 font-semibold text-slate-950">{row.rank}</td>
-                  <td className="px-3 py-3 font-medium text-slate-900">{row.companyName}</td>
-                  <td className="px-3 py-3 text-slate-700">{row.productName}</td>
-                  <td className="px-3 py-3 text-right tabular-nums">{row.maxRate.toFixed(2)}%</td>
-                  <td className="px-3 py-3 text-right font-semibold tabular-nums text-slate-950">
-                    {row.myRate.toFixed(2)}%
-                  </td>
-                  <td className="px-3 py-3 text-right font-semibold tabular-nums text-slate-950">
-                    {formatKrw(row.afterTaxInterest)}원
-                  </td>
-                </tr>
+                <Fragment key={`${row.finPrdtCd}-${row.option.saveTrm}-${row.option.rsrvType}`}>
+                  <tr className="text-slate-800">
+                    <td className="px-3 py-3 font-semibold text-slate-950">{row.rank}</td>
+                    <td className="px-3 py-3 font-medium text-slate-900">{row.companyName}</td>
+                    <td className="px-3 py-3 text-slate-700">
+                      {row.productName}
+                      {row.myRateResult.unconfirmed.length > 0 ? (
+                        <span className="ml-2 inline-flex rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-900">
+                          미확인 {row.myRateResult.unconfirmed.length}
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="px-3 py-3 text-right tabular-nums">{row.maxRate.toFixed(2)}%</td>
+                    <td className="px-3 py-3 text-right font-semibold tabular-nums text-slate-950">
+                      {row.myRate.toFixed(2)}%
+                    </td>
+                    <td className="px-3 py-3 text-right font-semibold tabular-nums text-slate-950">
+                      {formatKrw(row.afterTaxInterest)}원
+                    </td>
+                  </tr>
+                  {row.myRateResult.unconfirmed.length > 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-3 pb-3">
+                        <details className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                          <summary
+                            aria-label={`${row.companyName} ${row.productName} ${row.option.saveTrm}개월 ${row.option.rsrvType === 'S' ? '정액적립식' : '자유적립식'} 조건 확인`}
+                            className="cursor-pointer rounded-sm text-sm font-medium text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2"
+                          >
+                            조건 확인
+                          </summary>
+                          <ProductConditions
+                            result={row.myRateResult}
+                            onConfirm={(code) => onConditionConfirm(row.finPrdtCd, code)}
+                          />
+                        </details>
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
               ))}
             </tbody>
           </table>
