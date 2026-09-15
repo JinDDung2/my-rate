@@ -40,13 +40,42 @@ export function Calculator() {
     products.status,
   ]);
 
+  const bankNames = useMemo(
+    () => (products.status === 'success' ? getBankNames(products.data.products) : []),
+    [products.data, products.status],
+  );
+
+  const { setSalaryTransferBank, setCardUsageBank } = calcInput;
+
+  // 공유 URL(sb/cb)은 검증 없이 은행명을 그대로 담고 있을 수 있다(예: 데이터가
+  // disclosureMonth 갱신으로 바뀌어 해당 은행이 더 이상 없는 경우). 실제 은행 목록이
+  // 로드된 뒤 더 이상 존재하지 않는 은행이 선택돼 있으면 초기화해, <select>가 보여주는
+  // "선택 안 함"과 내부 상태가 어긋나는 것을 막는다.
+  useEffect(() => {
+    if (products.status !== 'success') return;
+    const validBanks = new Set(bankNames);
+    if (input.salaryTransferBank && !validBanks.has(input.salaryTransferBank)) {
+      setSalaryTransferBank(null);
+    }
+    if (input.cardUsageBank && !validBanks.has(input.cardUsageBank)) {
+      setCardUsageBank(null);
+    }
+  }, [
+    bankNames,
+    products.status,
+    input.salaryTransferBank,
+    input.cardUsageBank,
+    setSalaryTransferBank,
+    setCardUsageBank,
+  ]);
+
   return (
     <div className="grid gap-8">
       <ConditionPanel
         amountError={calcInput.amountError}
         amountText={calcInput.amountText}
         input={input}
-        bankNames={products.status === 'success' ? getBankNames(products.data.products) : []}
+        bankNames={bankNames}
         onSalaryTransferBankChange={calcInput.setSalaryTransferBank}
         onCardUsageBankChange={calcInput.setCardUsageBank}
         onAmountStep={calcInput.stepAmount}
