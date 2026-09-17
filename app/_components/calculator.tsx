@@ -103,7 +103,7 @@ export function Calculator() {
         ) : null}
       </section>
 
-      {rankingRows ? <RankingTable rows={rankingRows} /> : null}
+      {rankingRows ? <RankingTable rows={rankingRows} onConditionConfirm={calcInput.setProductConditionOverride} /> : null}
 
       {rankingRows && rankingRows.length > 0 ? (
         <TopProductCard
