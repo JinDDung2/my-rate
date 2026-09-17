@@ -8,7 +8,7 @@ diff는 원래 핸드오프의 Acceptance Criteria를 모두 충족한다.
 - 광고 1위 정렬: `option.maxRate` desc → `option.baseRate` desc → `compareCodePointAscending(finPrdtCd)`. `finPrdtCd`가 행마다 유일하므로 완전 전순서 → 입력 순서 무관 결정적. 후보 집합은 `buildRanking` 결과(`rows`)를 그대로 입력받음.
 - `differsFromAdvertised = rankingRows[0].finPrdtCd !== advertisedLeader.finPrdtCd`. 같으면 `false`.
 - 카드는 `rankingRows[0]` 기준: 광고 최고금리 `myLeader.maxRate.toFixed(2)%`, 내 금리 `myLeader.myRate.toFixed(2)%`, 원금 `formatKrw(interest.principal)+원`, 세후이자 `formatKrw(interest.afterTaxInterest)+원`. 재계산 없음.
-- 충족 O = `myRateResult.applied`, 미충족 X = `myRateResult.unapplied`, `<h3>`로 구분. 빈 배열은 "없음". `excluded`는 렌더 안 함(`applied`/`unapplied`가 이미 `isCountable` 통과분만 담음).
+- 충족 O = `myRateResult.applied`, 미충족 X = `myRateResult.notMet`, `<h3>`로 구분. 빈 배열은 "없음". `excluded`는 렌더 안 함(`applied`/`notMet`가 이미 `isCountable` 통과분만 담음).
 - 우대폭은 `formatRateBpPercentPoint`로 `%p` 표기(`50→0.5%p`, `25→0.25%p`, `100→1%p`, `10→0.1%p`), 불필요한 0 제거.
 - 배지: amber 스타일 + "광고 1위와 다릅니다" 텍스트(색상 단독 아님), `differsFromAdvertised`일 때만 렌더.
 - 렌더 조건: `calculator.tsx`에서 `rankingRows && rankingRows.length > 0` + 컴포넌트 내 `summary` null 가드(이중). `<RankingTable>` 아래, `<ProductList>` 위 배선.

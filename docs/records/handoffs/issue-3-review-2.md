@@ -22,6 +22,6 @@
 
 ## Summary
 
-핵심 순수 모듈 `lib/my-rate.ts`는 AC를 충실히 만족한다. bp 정수 산술(`Math.round` 경계화, 정수 합·클램프 후 `/100`), 옵션 단위 계산, 양방향 클램프(`max(base, min(unclamped, max))`), `OTHER`·`rateBp===0` 제외 + 3버킷(applied/unapplied/excluded) 분할, `CONDITION_CODES` → 원본 인덱스 순 결정적 정렬, 원본 `SpecialCondition` 참조 보존, `findRateOption` null 반환 — 모두 스펙대로 구현됐다. 내가 직접 `npm test`(15/15 pass, `@/` 별칭이 tsx 런타임에서 정상 해석됨)와 `npm run typecheck`(통과)를 실행해 확인했다. `010200100070` 12개월/정액에서 `clamped===true`, `myRate===3.15`, `clampedAwayBp===10`, `appliedBp===70`(OTHER 2행 제외) 검증됨. `data/products.json`·`lib/types.ts`·`lib/calc-input.ts`·`lib/conditions.ts`·`scripts/**` 미수정, `package.json`은 `test` 스크립트만 추가.
+핵심 순수 모듈 `lib/my-rate.ts`는 AC를 충실히 만족한다. bp 정수 산술(`Math.round` 경계화, 정수 합·클램프 후 `/100`), 옵션 단위 계산, 양방향 클램프(`max(base, min(unclamped, max))`), `OTHER`·`rateBp===0` 제외 + 3버킷(applied/notMet/excluded) 분할, `CONDITION_CODES` → 원본 인덱스 순 결정적 정렬, 원본 `SpecialCondition` 참조 보존, `findRateOption` null 반환 — 모두 스펙대로 구현됐다. 내가 직접 `npm test`(15/15 pass, `@/` 별칭이 tsx 런타임에서 정상 해석됨)와 `npm run typecheck`(통과)를 실행해 확인했다. `010200100070` 12개월/정액에서 `clamped===true`, `myRate===3.15`, `clampedAwayBp===10`, `appliedBp===70`(OTHER 2행 제외) 검증됨. `data/products.json`·`lib/types.ts`·`lib/calc-input.ts`·`lib/conditions.ts`·`scripts/**` 미수정, `package.json`은 `test` 스크립트만 추가.
 
 발견된 문제는 모두 경미하다: (1) `ProductList` 시그니처 변경이 핸드오프의 "그대로 둔다"를 벗어나지만 중복 fetch 방지라는 합당한 이유가 있고 기록에 남았다 — 리뷰어 승인만 받으면 수용 가능, (2) 테스트의 `it.skip` 사용법이 부정확하나 실데이터가 존재해 현재 영향 없음. 병합을 막을 correctness 버그는 없음. 조건부 승인 권장 — Questions의 #1(이슈 #8 등록 여부) 확인 후.

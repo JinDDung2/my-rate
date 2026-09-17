@@ -6,6 +6,7 @@ import { ConditionPanel } from '@/app/_components/condition-panel';
 import { ProductList } from '@/app/_components/product-list';
 import { RankingTable } from '@/app/_components/ranking-table';
 import { TopProductCard } from '@/app/_components/top-product-card';
+import { getBankNames } from '@/lib/bank-condition';
 import { RESERVE_TYPE_LABELS } from '@/lib/calc-input';
 import { CONDITION_META } from '@/lib/conditions';
 import { useCalcInput } from '@/lib/use-calc-input';
@@ -34,12 +35,38 @@ export function Calculator() {
 
     return buildRanking(products.data.products, input);
   }, [
-    input.monthlyAmount,
-    input.reserveType,
-    input.selectedConditions,
-    input.termMonths,
+    input,
     products.data,
     products.status,
+  ]);
+
+  const bankNames = useMemo(
+    () => (products.status === 'success' ? getBankNames(products.data.products) : []),
+    [products.data, products.status],
+  );
+
+  const { setSalaryTransferBank, setCardUsageBank } = calcInput;
+
+  // 공유 URL(sb/cb)은 검증 없이 은행명을 그대로 담고 있을 수 있다(예: 데이터가
+  // disclosureMonth 갱신으로 바뀌어 해당 은행이 더 이상 없는 경우). 실제 은행 목록이
+  // 로드된 뒤 더 이상 존재하지 않는 은행이 선택돼 있으면 초기화해, <select>가 보여주는
+  // "선택 안 함"과 내부 상태가 어긋나는 것을 막는다.
+  useEffect(() => {
+    if (products.status !== 'success') return;
+    const validBanks = new Set(bankNames);
+    if (input.salaryTransferBank && !validBanks.has(input.salaryTransferBank)) {
+      setSalaryTransferBank(null);
+    }
+    if (input.cardUsageBank && !validBanks.has(input.cardUsageBank)) {
+      setCardUsageBank(null);
+    }
+  }, [
+    bankNames,
+    products.status,
+    input.salaryTransferBank,
+    input.cardUsageBank,
+    setSalaryTransferBank,
+    setCardUsageBank,
   ]);
 
   return (
@@ -48,6 +75,9 @@ export function Calculator() {
         amountError={calcInput.amountError}
         amountText={calcInput.amountText}
         input={input}
+        bankNames={bankNames}
+        onSalaryTransferBankChange={calcInput.setSalaryTransferBank}
+        onCardUsageBankChange={calcInput.setCardUsageBank}
         onAmountStep={calcInput.stepAmount}
         onAmountTextChange={calcInput.setAmountText}
         onConditionToggle={calcInput.toggleCondition}
@@ -75,7 +105,12 @@ export function Calculator() {
 
       {rankingRows ? <RankingTable rows={rankingRows} /> : null}
 
-      {rankingRows && rankingRows.length > 0 ? <TopProductCard rankingRows={rankingRows} /> : null}
+      {rankingRows && rankingRows.length > 0 ? (
+        <TopProductCard
+          rankingRows={rankingRows}
+          onConditionConfirm={calcInput.setProductConditionOverride}
+        />
+      ) : null}
 
       {rankingRows && rankingRows.length > 0 && products.status === 'success' ? (
         <ActionListCard rankingRows={rankingRows} products={products.data.products} input={input} />

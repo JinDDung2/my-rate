@@ -6,7 +6,7 @@ Issue #8 implements F-08, F-09, and the related §8.2 output-verification displa
 
 - Added `rawSpecialCondition` and `unexplainedBp` to `RankingRow`.
 - `buildRanking` copies both fields from the source `Product` without recalculating them.
-- `TopProductCard` renders every displayed applied/unapplied preferential condition with:
+- `TopProductCard` renders every displayed applied/notMet preferential condition with:
   - the condition label and formatted rate
   - an `AI 해석` text badge
   - the original `evidence` span content from the extraction result
@@ -20,14 +20,14 @@ Issue #8 implements F-08, F-09, and the related §8.2 output-verification displa
 - The top-card prop remains `rankingRows` only. Carrying the build-time product fields on `RankingRow` keeps the server-render test path simple and avoids an additional product lookup in the component.
 - The component remains a pure render component. It does not use `'use client'`, `useState`, or client-side JavaScript for the raw-text toggle.
 - `evidence` and `unexplainedBp` are trusted as build-time validated fields and are displayed as-is at runtime.
-- `excluded` conditions remain omitted from the applied/unapplied condition lists. Their source text remains available through the full raw-condition disclosure.
+- `excluded` conditions remain omitted from the applied/notMet condition lists. Their source text remains available through the full raw-condition disclosure.
 - The F-09 threshold is strict: `5bp` exactly is not displayed; `>5bp` is displayed.
 
 ## Demo Cases
 
 - Default visible top-card case: `monthlyAmount=500000`, `termMonths=12`, `reserveType=S`, `selectedConditions=[]`
   - Top product: `10-01-30-031-0036`, `JB 다이렉트적금(정액적립식)`.
-  - The applied list is empty. The unapplied list contains `당행 계좌 자동이체 6회 이상 입금` with `AI 해석` and evidence text.
+  - The applied list is empty. The notMet list contains `당행 계좌 자동이체 6회 이상 입금` with `AI 해석` and evidence text.
   - The full raw condition appears in the `근거 원문 보기 ▾` disclosure.
   - `unexplainedBp=0`, so the F-09 notice is not shown.
 - F-09 notice test case: synthetic `RankingRow` with `unexplainedBp=60`.

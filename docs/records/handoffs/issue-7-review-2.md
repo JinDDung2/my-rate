@@ -8,11 +8,11 @@ CLAUDE.md 및 관련 모듈(`my-rate.ts`, `ranking.ts`, `interest.ts`, `conditio
 
 - `lib/action-list.ts`는 `react`/`next` import 없이 `@/lib/*` 순수 모듈만 참조한다. `'use client'` 없음.
 - baseline을 `calculateMyRate(product, option, input.selectedConditions)` + `calculateInterest`(`annualRate = myRateBp/10000`, `interestType = option.intrRateType`)로 내부 재계산 → `ranking.ts:38-44`와 동일 규약. 테스트 `keeps baseline interest aligned with buildRanking row interest`가 이를 교차검증.
-- 후보는 `baselineMyRate.unapplied`에서만 도출, `codeToRateBp` Map으로 코드 단위 dedup, `rateBp`는 해당 코드 미충족 행 합. `calculateMyRate`가 `Set<code>`로 판정하므로 dedup된 코드 1개 추가 시 그 코드의 모든 조건이 적용됨(테스트 확인).
+- 후보는 `baselineMyRate.notMet`에서만 도출, `codeToRateBp` Map으로 코드 단위 dedup, `rateBp`는 해당 코드 미충족 행 합. `calculateMyRate`가 `Set<code>`로 판정하므로 dedup된 코드 1개 추가 시 그 코드의 모든 조건이 적용됨(테스트 확인).
 - 각 시뮬레이션 조건 집합 = `[...input.selectedConditions, code]` 정확히 1개 추가. 조합 없음. 테스트 `measures each addition on top of already selected conditions`가 `combinationAdded`와 다름을 명시적으로 assert.
 - 필터 `afterTaxInterestDelta > 0` (0 포함 제외), 정렬 delta 내림차순 → `CONDITION_CODES` 순서 tie-break(고유값이라 결정적), `MAX_ACTIONS = 3` slice.
 - baseline이 `maxRate` 클램프면 모든 delta 0 → 빈 배열. 부분 클램프는 유효 증가분만 반영하되 `>0`이면 유지(테스트 확인).
-- `OTHER`는 `isCountable`에서 `unapplied` 진입 전 제외되므로 `condition.code as CheckableConditionCode` 캐스트 및 `CONDITION_META[code].label` 접근 안전.
+- `OTHER`는 `isCountable`에서 `notMet` 진입 전 제외되므로 `condition.code as CheckableConditionCode` 캐스트 및 `CONDITION_META[code].label` 접근 안전.
 - `ActionListCard`는 `rankingRows[0]` → `products.find(finPrdtCd)` → `buildActionList(product, topRow.option, input)`. `!topRow` / `!product` / `actions.length === 0` 시 `null`(→ `renderToStaticMarkup` `''`).
 - 카드 금액은 `+{formatKrw(delta)}원`으로 천 단위 표기, slice된 최대 3행만 렌더.
 - `calculator.tsx`에서 `TopProductCard` 다음, `rankingRows.length > 0 && products.status === 'success'` 조건, `products={products.data.products}` `input={input}` 전달.

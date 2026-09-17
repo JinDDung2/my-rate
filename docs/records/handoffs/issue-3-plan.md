@@ -64,10 +64,10 @@
 2. **같은 코드가 여러 행이면 전부 합산한다(sum-all-entries).** dedup(코드별 max)로 가면 `010200100070`의 합이 60bp가 되어 갭 60bp와 같아지고, **데이터셋 전체에서 클램프가 한 번도 발동하지 않아 T5의 실데이터 픽스처가 사라진다.** 스펙 문언(`Σ 해당 상품이 제공하는 조건의 rate_bp`)의 직독과도 일치한다. 대신 UI에서 "자동이체" 체크 하나가 2행으로 보이는 문제는 #6이 코드 단위로 묶어 표시하면 되므로, **반환 목록에는 원본 행을 그대로 담고 합치지 않는다.**
 3. **반환 목록은 2버킷이 아니라 3버킷으로 한다.**
    - `applied` — 사용자가 체크 + 상품이 제공 + 계산 대상 → 실제로 가산된 행
-   - `unapplied` — 상품이 제공 + 계산 대상 + 사용자가 체크하지 않음 (= §4 [C]의 `미충족 X` 목록)
+   - `notMet` — 상품이 제공 + 계산 대상 + 사용자가 체크하지 않음 (= §4 [C]의 `미충족 X` 목록)
    - `excluded` — `OTHER`이거나 `rateBp === 0`이라 계산에서 빠진 행 (= §4 [C]의 정보 표시 영역, F-08/F-09 입력)
 
-   이슈 AC는 "적용/미적용" 2개만 말하지만, `excluded`를 `unapplied`에 섞으면 #6이 "체크하면 오르는 조건"과 "체크해도 안 오르는 조건"을 구분할 수 없고 #7의 액션 리스트가 0원짜리 항목을 제안하게 된다. 3버킷이 AC "상세 화면에서 사용할 수 있는 형태"의 실질이다.
+   이슈 AC는 "적용/미적용" 2개만 말하지만, `excluded`를 `notMet`에 섞으면 #6이 "체크하면 오르는 조건"과 "체크해도 안 오르는 조건"을 구분할 수 없고 #7의 액션 리스트가 0원짜리 항목을 제안하게 된다. 3버킷이 AC "상세 화면에서 사용할 수 있는 형태"의 실질이다.
 4. **사용자가 체크했지만 상품이 제공하지 않는 조건은 어느 목록에도 넣지 않는다.** 그 조건에는 이 상품 기준의 `label`·`rateBp`·`evidence`가 존재하지 않아 채울 값이 없다. 사용자가 무엇을 체크했는지는 이미 [A] 패널이 보여준다.
 5. **각 목록의 원소는 `SpecialCondition`을 그대로 담는다** (`{ code, label, rateBp, evidence, confidence }`). 새 DTO로 재포장하지 않는다 — #8이 `evidence`와 `confidence`를 그대로 필요로 한다.
 6. **반환 타입은 `%`와 `bp`를 둘 다 노출한다.** `myRate`(% 표시용), `myRateBp`(정수, #5 정렬·#7 증감분 계산이 오차 없이 쓸 값), `baseRate`/`maxRate`(옵션 값 그대로), `appliedBp`(가산된 합), `clamped: boolean`, `clampedAwayBp`(클램프로 잘려나간 bp — #6이 "상한에 걸렸습니다"를 설명할 때 필요). 하위 이슈가 `%`를 다시 bp로 되돌리는 순간 실측 3의 오차가 재발하므로 정수를 함께 준다.
@@ -107,7 +107,7 @@
   - `isCountable(condition: SpecialCondition): boolean` = `code !== 'OTHER' && rateBp !== 0`
   - `findRateOption(product, termMonths, reserveType): RateOption | null`
   - `calculateMyRate(product: Product, option: RateOption, selected: readonly CheckableConditionCode[]): MyRateResult`
-  - `interface MyRateResult { myRate: number; myRateBp: number; baseRate: number; maxRate: number; appliedBp: number; clamped: boolean; clampedAwayBp: number; applied: SpecialCondition[]; unapplied: SpecialCondition[]; excluded: SpecialCondition[] }`
+  - `interface MyRateResult { myRate: number; myRateBp: number; baseRate: number; maxRate: number; appliedBp: number; clamped: boolean; clampedAwayBp: number; applied: SpecialCondition[]; notMet: SpecialCondition[]; excluded: SpecialCondition[] }`
 - `lib/my-rate.test.ts` — T5·T6·T7 + `OTHER` 제외 + 미제공 조건 제외 + 중복 코드 합산 + bp 정수 산술 + `findRateOption` 미매칭. 실데이터(`data/products.json`)와 합성 픽스처를 함께 사용.
 
 **수정할 것**
@@ -124,9 +124,9 @@
 - [ ] 같은 상품에서 `OTHER` 2행(각 10bp)이 합산되지 않는다 — 미클램프 합이 90bp가 아니라 70bp다.
 - [ ] `MARKETING_AGREE`·`APP_MISSION`을 체크해도 위 상품의 `myRate`가 변하지 않는다(상품이 제공하지 않는 조건).
 - [ ] `AUTO_TRANSFER` 하나를 체크하면 `010200100070`에서 `applied`에 2행이 들어가고 20bp가 가산된다(설계 결정 2대로 동작).
-- [ ] `rateBp === 0`인 조건은 `applied`/`unapplied` 어디에도 없고 `excluded`에 있다.
-- [ ] `applied` + `unapplied` + `excluded`의 합집합이 `product.conditions` 전체와 정확히 일치하고, 세 목록이 서로소다(어떤 조건도 누락·중복되지 않는다).
-- [ ] `applied`/`unapplied`/`excluded` 각 목록이 `CONDITION_CODES` 순서로 정렬되어 있고, 사용자의 체크 순서를 바꿔도 동일한 배열이 나온다.
+- [ ] `rateBp === 0`인 조건은 `applied`/`notMet` 어디에도 없고 `excluded`에 있다.
+- [ ] `applied` + `notMet` + `excluded`의 합집합이 `product.conditions` 전체와 정확히 일치하고, 세 목록이 서로소다(어떤 조건도 누락·중복되지 않는다).
+- [ ] `applied`/`notMet`/`excluded` 각 목록이 `CONDITION_CODES` 순서로 정렬되어 있고, 사용자의 체크 순서를 바꿔도 동일한 배열이 나온다.
 - [ ] 각 목록의 원소가 `label`·`rateBp`·`evidence`·`confidence`를 그대로 갖는다(#6·#8이 추가 조회 없이 렌더 가능).
 - [ ] `unexplainedBp`가 `myRate`에 가산되지 않는다. `unexplainedBp > 0`인 8개 상품 전부에서 8종 전부 선택 시 `myRate < maxRate`이다.
 - [ ] `baseRate = 3.2`, 조건 `10bp` 케이스에서 `myRate`가 `3.3000000000000003`이 아니라 `3.3`이다(bp 정수 경로 확인).
@@ -147,7 +147,7 @@ Codex가 실행하고 결과를 기록할 것.
    - **T7 미해석 우대폭** — `unexplainedBp > 0`인 8개 상품 전 옵션에서 8종 전부 선택 시 `myRate < maxRate`. **주의: 이 8건은 계산 대상 조건 합이 0bp라 자명하게 통과한다.** 따라서 `baseRate` + 가산되는 조건 + 남은 미해석분이 동시에 존재하는 **합성 픽스처를 반드시 추가**해서 "가산은 되지만 maxRate에는 못 미친다"를 진짜로 검증할 것.
 4. **전수 불변식 테스트** (43상품 × 135옵션 × 조건 부분집합 일부):
    - 모든 경우에 `baseRate <= myRate <= maxRate`.
-   - `applied`/`unapplied`/`excluded`가 서로소이고 합집합이 `product.conditions`와 같다.
+   - `applied`/`notMet`/`excluded`가 서로소이고 합집합이 `product.conditions`와 같다.
    - `appliedBp === applied.reduce((a, c) => a + c.rateBp, 0)`.
    - `clamped === (toBp(baseRate) + appliedBp > toBp(maxRate))`.
 5. **부동소수점 회귀 테스트** — `baseRate` 목록 `[2.2, 2.3, 2.45, 3.2, 3.05, 2.55]`에 각각 `10~70bp`를 더해 결과가 `x.xx` 2자리로 정확히 떨어지는지 확인. 하나라도 `...0000003`/`...9999997`이 나오면 실패.

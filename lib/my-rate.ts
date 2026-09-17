@@ -1,5 +1,6 @@
+import type { ConditionStatusResolver } from '@/lib/bank-condition';
 import type { CheckableConditionCode, ReserveType, TermMonths } from '@/lib/calc-input';
-import type { ConditionCode, Product, RateOption, SpecialCondition } from '@/lib/types';
+import type { Product, RateOption, SpecialCondition } from '@/lib/types';
 import { CONDITION_CODES } from '@/lib/types';
 
 export interface MyRateResult {
@@ -11,7 +12,8 @@ export interface MyRateResult {
   clamped: boolean;
   clampedAwayBp: number;
   applied: SpecialCondition[];
-  unapplied: SpecialCondition[];
+  notMet: SpecialCondition[];
+  unconfirmed: SpecialCondition[];
   excluded: SpecialCondition[];
 }
 
@@ -38,9 +40,8 @@ export function findRateOption(
 export function calculateMyRate(
   product: Product,
   option: RateOption,
-  selected: readonly CheckableConditionCode[],
+  resolveStatus: ConditionStatusResolver,
 ): MyRateResult {
-  const selectedCodes = new Set<ConditionCode>(selected);
   const indexedConditions = product.conditions.map((condition, index) => ({ condition, index }));
 
   indexedConditions.sort((a, b) => {
@@ -52,16 +53,16 @@ export function calculateMyRate(
   });
 
   const applied: SpecialCondition[] = [];
-  const unapplied: SpecialCondition[] = [];
+  const notMet: SpecialCondition[] = [];
+  const unconfirmed: SpecialCondition[] = [];
   const excluded: SpecialCondition[] = [];
 
   for (const { condition } of indexedConditions) {
     if (!isCountable(condition)) {
       excluded.push(condition);
-    } else if (selectedCodes.has(condition.code)) {
-      applied.push(condition);
     } else {
-      unapplied.push(condition);
+      const status = resolveStatus(condition.code as CheckableConditionCode);
+      ({ applied, notMet, unconfirmed })[status].push(condition);
     }
   }
 
@@ -80,7 +81,8 @@ export function calculateMyRate(
     clamped: unclampedRateBp > maxRateBp,
     clampedAwayBp: Math.max(0, unclampedRateBp - myRateBp),
     applied,
-    unapplied,
+    notMet,
+    unconfirmed,
     excluded,
   };
 }

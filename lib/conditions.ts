@@ -1,3 +1,4 @@
+import type { BankScopedConditionCode, GlobalConditionCode } from '@/lib/calc-input';
 import type { ConditionCode } from '@/lib/types';
 import { CONDITION_CODES } from '@/lib/types';
 
@@ -52,4 +53,12 @@ export const CONDITION_META: {
 
 export const CHECKABLE_CONDITION_CODES = CONDITION_CODES.filter(
   (code): code is Exclude<ConditionCode, 'OTHER'> => code !== 'OTHER',
+);
+
+export function isBankScopedCondition(code: ConditionCode): code is BankScopedConditionCode {
+  return code === 'SALARY_TRANSFER' || code === 'CARD_USAGE' || code === 'FIRST_CUSTOMER';
+}
+
+export const GLOBAL_CONDITION_CODES = CHECKABLE_CONDITION_CODES.filter(
+  (code): code is GlobalConditionCode => !isBankScopedCondition(code),
 );

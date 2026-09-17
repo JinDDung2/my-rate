@@ -4,13 +4,13 @@
 
 diff는 원래 핸드오프의 Acceptance Criteria와 Constraints를 모두 충족한다. 확인한 내용:
 
-- **F-08 evidence 표시**: `ConditionList`가 `applied`/`unapplied` 각 항목에 `condition.evidence`를 `<p className="whitespace-pre-wrap">`로 렌더. 런타임 재가공 없음. (`top-product-card.tsx:34-36`)
+- **F-08 evidence 표시**: `ConditionList`가 `applied`/`notMet` 각 항목에 `condition.evidence`를 `<p className="whitespace-pre-wrap">`로 렌더. 런타임 재가공 없음. (`top-product-card.tsx:34-36`)
 - **AI 해석 배지**: 텍스트 배지로 렌더, 색상 의존 아님. `excluded`가 비어 배지가 0개인 케이스도 테스트로 고정(`doesNotMatch(/AI 해석/)`). (`top-product-card.tsx:30-32`)
 - **원문 토글**: native `<details><summary>근거 원문 보기 ▾`, `whitespace-pre-wrap`으로 개행 보존, JS 불필요. `'use client'`/`useState` 미사용. (`top-product-card.tsx:124-131`)
 - **F-09 고지**: `myLeader.unexplainedBp > 5` strict 비교, 문구는 명세 §5 F-09 원문과 일치, `formatRateBpPercentPoint(unexplainedBp)` 사용. JSX 줄바꿈은 단일 공백으로 정규화되어 문구 무결. 요약 라벨 `미해석 우대폭 {N}%p (미반영)`은 §4 목업 허용 형태. (`top-product-card.tsx:49-50, 114-122`)
 - **임계값**: `data/products.json`에 `unexplainedBp: 5` 상품 1건 존재 → 미표시 대상. 테스트가 `5` 미렌더 / `60` 렌더로 고정. (`top-product-card.test.ts:129-141`)
 - **금리 미가산**: `calculateMyRate`는 `unexplainedBp` 미참조(코드 확인, `my-rate.ts:70-72`). `buildRanking`은 `product`에서 값만 복사(`ranking.ts:53-54`). 회귀 테스트 2건 추가(`my-rate.test.ts:255-256`, `ranking.test.ts:270-282`).
-- **기존 동작 보존**: `excluded`는 여전히 조건 목록에 미렌더(`ConditionList`에 `applied`/`unapplied`만 전달). 신규 필수 필드는 5개 테스트 픽스처(`my-rate`, `ranking`, `action-list`, `action-list-card`, `top-product-card`)에 모두 반영됨.
+- **기존 동작 보존**: `excluded`는 여전히 조건 목록에 미렌더(`ConditionList`에 `applied`/`notMet`만 전달). 신규 필수 필드는 5개 테스트 픽스처(`my-rate`, `ranking`, `action-list`, `action-list-card`, `top-product-card`)에 모두 반영됨.
 - **모듈 순수성**: `lib/ranking.ts`에 `react`/`next` import 추가 없음. `formatRateBpPercentPoint` 재사용.
 - 데이터 확인: 43개 상품, `unexplainedBp` 비영 8건(5/50/60/90/220/250/400/600), `evidence` 빈 문자열 0건, `rawSpecialCondition` 빈 문자열 0건.
 
